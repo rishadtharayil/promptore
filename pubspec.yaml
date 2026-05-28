@@ -1,0 +1,53 @@
+name: promptore
+description: "A living archive of human imagination — discover, collect, and remix powerful AI prompts."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^3.3.1
+
+  # Navigation
+  go_router: ^17.2.3
+
+  # Typography
+  google_fonts: ^8.0.2
+
+  # Animations
+  flutter_animate: ^4.5.2
+
+  # Markdown
+  flutter_markdown: ^0.7.6
+
+  # Local Storage
+  hive_flutter: ^1.1.0
+
+  # UUID
+  uuid: ^4.5.3
+
+  # Images
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
+
+  # Icons
+  cupertino_icons: ^1.0.8
+
+  # Utilities
+  intl: ^0.20.2
+
+  # Haptics
+  vibration: ^3.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
