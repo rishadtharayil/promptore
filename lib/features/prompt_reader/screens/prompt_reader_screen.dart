@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:promptore/core/widgets/responsive_layout.dart';
 
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
@@ -148,12 +149,10 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
     );
     final isTunedIn = author.isTunedIn;
 
-    return Scaffold(
-        backgroundColor: PromptoreColorExtension.of(context).background,
+    return ResponsiveLayout(
         body: Stack(
           children: [
             CustomScrollView(
-              physics: const BouncingScrollPhysics(),
               slivers: [
                 // App bar
                 SliverAppBar(

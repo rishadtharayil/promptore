@@ -42,7 +42,6 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             await Future.delayed(Duration(milliseconds: 800));
           },
           child: CustomScrollView(
-            physics: BouncingScrollPhysics(),
             slivers: [
               // App bar
               SliverAppBar(

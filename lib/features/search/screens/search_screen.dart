@@ -3,6 +3,7 @@ import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:promptore/core/widgets/responsive_layout.dart';
 
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
@@ -57,7 +58,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final prompts = ref.watch(promptsProvider);
     final results = _getResults(prompts);
 
-    return Scaffold(
+    return ResponsiveLayout(
+      body: Scaffold(
         backgroundColor: PromptoreColorExtension.of(context).background,
         body: SafeArea(
           child: Column(
@@ -133,7 +135,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ],
           ),
         ),
-      );
+      ),
+    );
   }
 
   Widget _buildSuggestions() {

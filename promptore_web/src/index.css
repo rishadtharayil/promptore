@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+:root {
+  /* LIGHT THEME VARIABLES */
+  --bg-light: hsl(40, 24%, 90%);
+  --surface-light: hsl(38, 22%, 94%);
+  --surface-elevated-light: hsl(36, 20%, 97%);
+  --ink-light: hsl(220, 20%, 15%);
+  --charcoal-light: hsl(220, 10%, 45%);
+  --warm-gray-light: hsl(36, 12%, 80%);
+  --sepia-light: hsl(32, 20%, 40%);
+  --gold-light: hsl(38, 65%, 42%);
+  --bronze-light: hsl(28, 50%, 40%);
+
+  /* DARK THEME VARIABLES */
+  --bg-dark: hsl(220, 25%, 7%);
+  --surface-dark: hsl(220, 22%, 10%);
+  --surface-elevated-dark: hsl(220, 20%, 13%);
+  --ink-dark: hsl(36, 25%, 88%);
+  --charcoal-dark: hsl(220, 12%, 50%);
+  --warm-gray-dark: hsl(220, 15%, 22%);
+  --sepia-dark: hsl(36, 15%, 60%);
+  --gold-dark: hsl(38, 75%, 52%);
+  --bronze-dark: hsl(28, 60%, 48%);
+
+  /* FONTS */
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* LAYOUT */
+  --side-nav-width: 80px;
+  --max-content-width: 650px;
+}
+
+/* THEME INJECTION */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+body.light {
+  --bg: var(--bg-light);
+  --surface: var(--surface-light);
+  --surface-elevated: var(--surface-elevated-light);
+  --ink: var(--ink-light);
+  --charcoal: var(--charcoal-light);
+  --warm-gray: var(--warm-gray-light);
+  --sepia: var(--sepia-light);
+  --gold: var(--gold-light);
+  --bronze: var(--bronze-light);
+  background-color: var(--bg);
+  color: var(--ink);
+}
+
+body.dark {
+  --bg: var(--bg-dark);
+  --surface: var(--surface-dark);
+  --surface-elevated: var(--surface-elevated-dark);
+  --ink: var(--ink-dark);
+  --charcoal: var(--charcoal-dark);
+  --warm-gray: var(--warm-gray-dark);
+  --sepia: var(--sepia-dark);
+  --gold: var(--gold-dark);
+  --bronze: var(--bronze-dark);
+  background-color: var(--bg);
+  color: var(--ink);
+}
+
+/* CUSTOM SCROLLBAR */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--warm-gray);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* SELECTION */
+::selection {
+  background: hsla(38, 75%, 52%, 0.25);
+  color: var(--gold);
+}
+
+/* UTILITY CLASSES */
+.serif { font-family: var(--font-serif); }
+.mono { font-family: var(--font-mono); }
+
+/* LAYOUT CONTAINER */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* RESPONSIVE LAYOUT */
+.main-wrapper {
+  display: flex;
+  flex: 1;
+  width: 100%;
+}
+
+.content-area {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.content-body {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 10% SIDE MARGINS ON DESKTOP */
+@media (min-width: 701px) {
+  .content-area {
+    padding-left: calc(10vw - var(--side-nav-width));
+    padding-right: 10vw;
+  }
+  .content-body {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .content-area {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 90px; /* Space for bottom nav */
+  }
+}

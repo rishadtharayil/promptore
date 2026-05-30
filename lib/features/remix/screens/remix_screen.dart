@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:promptore/core/widgets/responsive_layout.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
 
@@ -129,7 +130,8 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ResponsiveLayout(
+      body: Scaffold(
         backgroundColor: PromptoreColorExtension.of(context).background,
         appBar: AppBar(
           backgroundColor: PromptoreColorExtension.of(context).background,
@@ -150,7 +152,6 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
           centerTitle: true,
         ),
         body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.only(bottom: 100),
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -454,6 +455,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 }

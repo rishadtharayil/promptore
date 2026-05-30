@@ -49,7 +49,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         backgroundColor: PromptoreColorExtension.of(context).background,
         body: SafeArea(
           child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.only(bottom: 100),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../core/theme/colors.dart';
 import '../core/theme/typography.dart';
 import '../core/theme/dimensions.dart';
+import '../core/widgets/responsive_layout.dart';
 
 /// Main shell with atmospheric bottom navigation.
 /// Five tabs: Feed, Explore, Compose, Collections, Profile.
@@ -16,10 +17,10 @@ class MainShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: PromptoreColorExtension.of(context).background,
+    return ResponsiveLayout(
       body: navigationShell,
       bottomNavigationBar: _buildBottomNav(context),
+      sideNavigationBar: _buildSideNav(context),
     );
   }
 
@@ -76,6 +77,66 @@ class MainShell extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSideNav(BuildContext context) {
+    final currentIndex = navigationShell.currentIndex;
+
+    return Container(
+      width: 80,
+      decoration: BoxDecoration(
+        color: PromptoreColorExtension.of(context).surface,
+        border: Border(
+          right: BorderSide(
+            color: PromptoreColorExtension.of(context).warmGray,
+            width: 0.5,
+          ),
+        ),
+      ),
+      child: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _NavItem(
+              icon: Icons.auto_stories_outlined,
+              activeIcon: Icons.auto_stories,
+              label: 'Feed',
+              isActive: currentIndex == 0,
+              onTap: () => _onTap(0),
+            ),
+            const SizedBox(height: 32),
+            _NavItem(
+              icon: Icons.explore_outlined,
+              activeIcon: Icons.explore,
+              label: 'Explore',
+              isActive: currentIndex == 1,
+              onTap: () => _onTap(1),
+            ),
+            const SizedBox(height: 32),
+            _ComposeButton(
+              isActive: currentIndex == 2,
+              onTap: () => _onTap(2),
+            ),
+            const SizedBox(height: 32),
+            _NavItem(
+              icon: Icons.collections_bookmark_outlined,
+              activeIcon: Icons.collections_bookmark,
+              label: 'Archive',
+              isActive: currentIndex == 3,
+              onTap: () => _onTap(3),
+            ),
+            const SizedBox(height: 32),
+            _NavItem(
+              icon: Icons.person_outline,
+              activeIcon: Icons.person,
+              label: 'Profile',
+              isActive: currentIndex == 4,
+              onTap: () => _onTap(4),
+            ),
+          ],
         ),
       ),
     );
