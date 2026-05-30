@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:promptore/core/theme/colors.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/models/models.dart';
@@ -55,10 +57,10 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
           content: Text(
             'Title and content cannot be empty',
             style: PromptoreTypography.bodySmall.copyWith(
-              color: PromptoreColors.parchment,
+              color: PromptoreColorExtension.of(context).parchment,
             ),
           ),
-          backgroundColor: PromptoreColors.surfaceElevated,
+          backgroundColor: PromptoreColorExtension.of(context).surfaceElevated,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -104,10 +106,10 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
         content: Text(
           'Prompt archived successfully',
           style: PromptoreTypography.bodySmall.copyWith(
-            color: PromptoreColors.parchment,
+            color: PromptoreColorExtension.of(context).parchment,
           ),
         ),
-        backgroundColor: PromptoreColors.surfaceElevated,
+        backgroundColor: PromptoreColorExtension.of(context).surfaceElevated,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Dimensions.radiusMd),
@@ -127,7 +129,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
   Widget build(BuildContext context) {
     return GrainOverlay(
       child: Scaffold(
-        backgroundColor: PromptoreColors.background,
+        backgroundColor: PromptoreColorExtension.of(context).background,
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -162,7 +164,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                     style: GoogleFonts.cormorantGaramond(
                       fontSize: 26,
                       fontWeight: FontWeight.w500,
-                      color: PromptoreColors.parchment,
+                      color: PromptoreColorExtension.of(context).parchment,
                       height: 1.3,
                     ),
                     decoration: InputDecoration(
@@ -170,7 +172,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                       hintStyle: GoogleFonts.cormorantGaramond(
                         fontSize: 26,
                         fontWeight: FontWeight.w300,
-                        color: PromptoreColors.charcoal,
+                        color: PromptoreColorExtension.of(context).charcoal,
                         height: 1.3,
                       ),
                       border: InputBorder.none,
@@ -197,7 +199,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                       hintText:
                           'Write your prompt...\n\nThe best prompts feel like discovering a strange machine, a hidden manuscript, or a new perspective.',
                       hintStyle: PromptoreTypography.bodyMedium.copyWith(
-                        color: PromptoreColors.charcoal,
+                        color: PromptoreColorExtension.of(context).charcoal,
                         height: 1.7,
                       ),
                       border: InputBorder.none,
@@ -220,7 +222,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                     'CATEGORY',
                     style: PromptoreTypography.metaLarge.copyWith(
                       letterSpacing: 2.0,
-                      color: PromptoreColors.dustySepia,
+                      color: PromptoreColorExtension.of(context).dustySepia,
                     ),
                   ).animate().fadeIn(duration: 400.ms, delay: 350.ms),
 
@@ -243,13 +245,13 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                             decoration: BoxDecoration(
                               color: isSelected
                                   ? cat.color.withValues(alpha: 0.15)
-                                  : PromptoreColors.surface,
+                                  : PromptoreColorExtension.of(context).surface,
                               borderRadius:
                                   BorderRadius.circular(Dimensions.radiusFull),
                               border: Border.all(
                                 color: isSelected
                                     ? cat.color.withValues(alpha: 0.5)
-                                    : PromptoreColors.warmGray
+                                    : PromptoreColorExtension.of(context).warmGray
                                         .withValues(alpha: 0.4),
                                 width: 0.5,
                               ),
@@ -270,7 +272,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                                   style: PromptoreTypography.metaSmall.copyWith(
                                     color: isSelected
                                         ? cat.color
-                                        : PromptoreColors.dustySepia,
+                                        : PromptoreColorExtension.of(context).dustySepia,
                                     fontSize: 10,
                                   ),
                                 ),
@@ -289,7 +291,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                     'TAGS',
                     style: PromptoreTypography.metaLarge.copyWith(
                       letterSpacing: 2.0,
-                      color: PromptoreColors.dustySepia,
+                      color: PromptoreColorExtension.of(context).dustySepia,
                     ),
                   ),
 
@@ -307,7 +309,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                           ),
                           decoration: BoxDecoration(
                             color:
-                                PromptoreColors.warmGray.withValues(alpha: 0.3),
+                                PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
                             borderRadius:
                                 BorderRadius.circular(Dimensions.radiusFull),
                           ),
@@ -317,7 +319,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                               Text(
                                 tag,
                                 style: PromptoreTypography.metaSmall.copyWith(
-                                  color: PromptoreColors.dustySepia,
+                                  color: PromptoreColorExtension.of(context).dustySepia,
                                 ),
                               ),
                               const SizedBox(width: 4),
@@ -328,7 +330,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                                 child: Icon(
                                   Icons.close,
                                   size: 12,
-                                  color: PromptoreColors.charcoal,
+                                  color: PromptoreColorExtension.of(context).charcoal,
                                 ),
                               ),
                             ],
@@ -345,7 +347,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                     decoration: InputDecoration(
                       hintText: 'Add tags (comma separated)...',
                       hintStyle: PromptoreTypography.bodySmall.copyWith(
-                        color: PromptoreColors.charcoal,
+                        color: PromptoreColorExtension.of(context).charcoal,
                       ),
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
@@ -370,7 +372,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         decoration: BoxDecoration(
-                          color: PromptoreColors.mutedGold,
+                          color: PromptoreColorExtension.of(context).mutedGold,
                           borderRadius:
                               BorderRadius.circular(Dimensions.radiusMd),
                         ),
@@ -378,7 +380,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                           child: Text(
                             'Publish to Archive',
                             style: PromptoreTypography.labelLarge.copyWith(
-                              color: PromptoreColors.background,
+                              color: PromptoreColorExtension.of(context).background,
                               letterSpacing: 1.0,
                             ),
                           ),

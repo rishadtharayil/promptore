@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/colors.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/models/models.dart';
@@ -36,10 +38,10 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
 
     return GrainOverlay(
       child: Scaffold(
-        backgroundColor: PromptoreColors.background,
+        backgroundColor: PromptoreColorExtension.of(context).background,
         body: RefreshIndicator(
-          color: PromptoreColors.mutedGold,
-          backgroundColor: PromptoreColors.surface,
+          color: PromptoreColorExtension.of(context).mutedGold,
+          backgroundColor: PromptoreColorExtension.of(context).surface,
           onRefresh: () async {
             await Future.delayed(Duration(milliseconds: 800));
           },
@@ -50,7 +52,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
               SliverAppBar(
                 floating: true,
                 snap: true,
-                backgroundColor: PromptoreColors.background,
+                backgroundColor: PromptoreColorExtension.of(context).background,
                 elevation: 0,
                 scrolledUnderElevation: 0,
                 toolbarHeight: 56,
@@ -58,7 +60,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                   'PROMPTORE',
                   style: PromptoreTypography.titleLarge.copyWith(
                     letterSpacing: 4.0,
-                    color: PromptoreColors.mutedGold,
+                    color: PromptoreColorExtension.of(context).mutedGold,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -68,7 +70,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                   IconButton(
                     icon: Icon(
                       Icons.search_rounded,
-                      color: PromptoreColors.dustySepia,
+                      color: PromptoreColorExtension.of(context).dustySepia,
                       size: 22,
                     ),
                     onPressed: () => context.push('/search'),
@@ -136,7 +138,7 @@ class _CategoryChipBar extends StatelessWidget {
             label: 'All',
             symbol: '◎',
             isSelected: selected == null,
-            color: PromptoreColors.mutedGold,
+            color: PromptoreColorExtension.of(context).mutedGold,
             onTap: () => onSelected(null),
           ),
           SizedBox(width: 8),
@@ -187,12 +189,12 @@ class _Chip extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? color.withValues(alpha: 0.15)
-              : PromptoreColors.surface,
+              : PromptoreColorExtension.of(context).surface,
           borderRadius: BorderRadius.circular(Dimensions.radiusFull),
           border: Border.all(
             color: isSelected
                 ? color.withValues(alpha: 0.5)
-                : PromptoreColors.warmGray.withValues(alpha: 0.4),
+                : PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.4),
             width: 0.5,
           ),
         ),
@@ -207,7 +209,7 @@ class _Chip extends StatelessWidget {
             Text(
               label,
               style: PromptoreTypography.metaSmall.copyWith(
-                color: isSelected ? color : PromptoreColors.dustySepia,
+                color: isSelected ? color : PromptoreColorExtension.of(context).dustySepia,
                 letterSpacing: 0.5,
                 fontSize: 10,
               ),

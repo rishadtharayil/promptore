@@ -1,11 +1,13 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/colors.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/models/models.dart';
@@ -54,10 +56,10 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
         content: Text(
           'Prompt copied to archive',
           style: PromptoreTypography.bodySmall.copyWith(
-            color: PromptoreColors.parchment,
+            color: PromptoreColorExtension.of(context).parchment,
           ),
         ),
-        backgroundColor: PromptoreColors.surfaceElevated,
+        backgroundColor: PromptoreColorExtension.of(context).surfaceElevated,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Dimensions.radiusMd),
@@ -79,10 +81,10 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
           content: Text(
             'Annotation published to margin',
             style: PromptoreTypography.bodySmall.copyWith(
-              color: PromptoreColors.parchment,
+              color: PromptoreColorExtension.of(context).parchment,
             ),
           ),
-          backgroundColor: PromptoreColors.surfaceElevated,
+          backgroundColor: PromptoreColorExtension.of(context).surfaceElevated,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(Dimensions.radiusMd),
@@ -115,7 +117,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
           text: match.group(2),
           style: TextStyle(
             fontStyle: FontStyle.italic,
-            color: PromptoreColors.mutedGold.withValues(alpha: 0.9),
+            color: PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.9),
           ),
         ));
       }
@@ -151,7 +153,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
 
     return GrainOverlay(
       child: Scaffold(
-        backgroundColor: PromptoreColors.background,
+        backgroundColor: PromptoreColorExtension.of(context).background,
         body: Stack(
           children: [
             CustomScrollView(
@@ -167,7 +169,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                     icon: Icon(
                       Icons.arrow_back_ios_rounded,
                       size: 20,
-                      color: PromptoreColors.dustySepia,
+                      color: PromptoreColorExtension.of(context).dustySepia,
                     ),
                     onPressed: () => context.pop(),
                   ),
@@ -180,8 +182,8 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                             : Icons.text_format_rounded,
                         size: 20,
                         color: _typewriterEnabled
-                            ? PromptoreColors.mutedGold
-                            : PromptoreColors.charcoal,
+                            ? PromptoreColorExtension.of(context).mutedGold
+                            : PromptoreColorExtension.of(context).charcoal,
                       ),
                       onPressed: () {
                         setState(() => _typewriterEnabled = !_typewriterEnabled);
@@ -194,8 +196,8 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                             : Icons.bookmark_outline_rounded,
                         size: 20,
                         color: prompt.isArchived
-                            ? PromptoreColors.mutedGold
-                            : PromptoreColors.dustySepia,
+                            ? PromptoreColorExtension.of(context).mutedGold
+                            : PromptoreColorExtension.of(context).dustySepia,
                       ),
                       onPressed: () {
                         HapticFeedback.lightImpact();
@@ -313,10 +315,10 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                                 ),
                                 decoration: BoxDecoration(
                                   color: isTunedIn
-                                      ? PromptoreColors.mutedGold.withValues(alpha: 0.15)
+                                      ? PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.15)
                                       : Colors.transparent,
                                   border: Border.all(
-                                    color: PromptoreColors.mutedGold
+                                    color: PromptoreColorExtension.of(context).mutedGold
                                         .withValues(alpha: isTunedIn ? 0.6 : 0.4),
                                     width: 0.5,
                                   ),
@@ -327,7 +329,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                                 child: Text(
                                   isTunedIn ? 'Tuned In' : 'Tune In',
                                   style: PromptoreTypography.metaMedium.copyWith(
-                                    color: PromptoreColors.mutedGold,
+                                    color: PromptoreColorExtension.of(context).mutedGold,
                                     letterSpacing: 0.5,
                                   ),
                                 ),
@@ -354,7 +356,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                             Text(
                               '${(prompt.impactScore * 100).toInt()}% impact',
                               style: PromptoreTypography.readerMeta.copyWith(
-                                color: PromptoreColors.mutedGold,
+                                color: PromptoreColorExtension.of(context).mutedGold,
                               ),
                             ),
                           ],
@@ -371,13 +373,13 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                           Container(
                             padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
-                              color: PromptoreColors.surfaceElevated,
+                              color: PromptoreColorExtension.of(context).surfaceElevated,
                               borderRadius: BorderRadius.circular(
                                 Dimensions.radiusSm,
                               ),
                               border: Border.all(
                                 color:
-                                    PromptoreColors.warmGray.withValues(alpha: 0.3),
+                                    PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
                                 width: 0.5,
                               ),
                             ),
@@ -386,14 +388,14 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                                 Icon(
                                   Icons.call_split_rounded,
                                   size: 14,
-                                  color: PromptoreColors.fadedBronze,
+                                  color: PromptoreColorExtension.of(context).fadedBronze,
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
                                     'Remixed from: ${prompt.remixOfTitle}',
                                     style: PromptoreTypography.metaMedium.copyWith(
-                                      color: PromptoreColors.fadedBronze,
+                                      color: PromptoreColorExtension.of(context).fadedBronze,
                                     ),
                                   ),
                                 ),
@@ -424,7 +426,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                                   vertical: 5,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: PromptoreColors.warmGray
+                                  color: PromptoreColorExtension.of(context).warmGray
                                       .withValues(alpha: 0.3),
                                   borderRadius: BorderRadius.circular(
                                     Dimensions.radiusFull,
@@ -433,7 +435,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                                 child: Text(
                                   '#$tag',
                                   style: PromptoreTypography.metaMedium.copyWith(
-                                    color: PromptoreColors.dustySepia,
+                                    color: PromptoreColorExtension.of(context).dustySepia,
                                   ),
                                 ),
                               );
@@ -446,7 +448,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                         Text(
                           'Annotations',
                           style: PromptoreTypography.titleSmall.copyWith(
-                            color: PromptoreColors.dustySepia,
+                            color: PromptoreColorExtension.of(context).dustySepia,
                             letterSpacing: 1.0,
                           ),
                         ),
@@ -459,13 +461,13 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                               margin: const EdgeInsets.only(bottom: 12),
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: PromptoreColors.surfaceElevated,
+                                color: PromptoreColorExtension.of(context).surfaceElevated,
                                 borderRadius: BorderRadius.circular(
                                   Dimensions.radiusSm,
                                 ),
                                 border: Border(
                                   left: BorderSide(
-                                    color: PromptoreColors.mutedGold
+                                    color: PromptoreColorExtension.of(context).mutedGold
                                         .withValues(alpha: 0.3),
                                     width: 2,
                                   ),
@@ -480,7 +482,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                                         ann.authorName,
                                         style: PromptoreTypography.labelMedium
                                             .copyWith(
-                                          color: PromptoreColors.parchment,
+                                          color: PromptoreColorExtension.of(context).parchment,
                                         ),
                                       ),
                                       const SizedBox(width: 6),
@@ -495,7 +497,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                                     ann.content,
                                     style: PromptoreTypography.bodySmall.copyWith(
                                       height: 1.6,
-                                      color: PromptoreColors.dustySepia,
+                                      color: PromptoreColorExtension.of(context).dustySepia,
                                     ),
                                   ),
                                 ],
@@ -513,7 +515,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                             child: Text(
                               'No margin notes on this manuscript yet.',
                               style: PromptoreTypography.bodySmall.copyWith(
-                                color: PromptoreColors.charcoal,
+                                color: PromptoreColorExtension.of(context).charcoal,
                               ),
                             ),
                           ),
@@ -524,7 +526,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                         Text(
                           'Add Margin Note',
                           style: PromptoreTypography.titleSmall.copyWith(
-                            color: PromptoreColors.dustySepia,
+                            color: PromptoreColorExtension.of(context).dustySepia,
                             letterSpacing: 1.0,
                           ),
                         ),
@@ -532,40 +534,40 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                         TextField(
                           controller: _annotationController,
                           style: PromptoreTypography.bodySmall.copyWith(
-                            color: PromptoreColors.parchment,
+                            color: PromptoreColorExtension.of(context).parchment,
                           ),
                           decoration: InputDecoration(
                             hintText: 'Write a thought or annotation...',
                             hintStyle: PromptoreTypography.bodySmall.copyWith(
-                              color: PromptoreColors.charcoal,
+                              color: PromptoreColorExtension.of(context).charcoal,
                             ),
                             filled: true,
-                            fillColor: PromptoreColors.surfaceElevated,
+                            fillColor: PromptoreColorExtension.of(context).surfaceElevated,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(Dimensions.radiusSm),
                               borderSide: BorderSide(
-                                color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+                                color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
                                 width: 0.5,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(Dimensions.radiusSm),
                               borderSide: BorderSide(
-                                color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+                                color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
                                 width: 0.5,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(Dimensions.radiusSm),
                               borderSide: BorderSide(
-                                color: PromptoreColors.mutedGold.withValues(alpha: 0.5),
+                                color: PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.5),
                                 width: 0.5,
                               ),
                             ),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 Icons.add_comment_rounded,
-                                color: PromptoreColors.mutedGold,
+                                color: PromptoreColorExtension.of(context).mutedGold,
                                 size: 18,
                               ),
                               onPressed: _submitAnnotation,
@@ -599,12 +601,12 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                       vertical: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: PromptoreColors.surfaceElevated
+                      color: PromptoreColorExtension.of(context).surfaceElevated
                           .withValues(alpha: 0.92),
                       borderRadius:
                           BorderRadius.circular(Dimensions.radiusLg),
                       border: Border.all(
-                        color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+                        color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
                         width: 0.5,
                       ),
                     ),
@@ -651,10 +653,10 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                                 content: Text(
                                   'Prompt transmitted successfully',
                                   style: PromptoreTypography.bodySmall.copyWith(
-                                    color: PromptoreColors.parchment,
+                                    color: PromptoreColorExtension.of(context).parchment,
                                   ),
                                 ),
-                                backgroundColor: PromptoreColors.surfaceElevated,
+                                backgroundColor: PromptoreColorExtension.of(context).surfaceElevated,
                                 behavior: SnackBarBehavior.floating,
                               ),
                             );
@@ -727,16 +729,16 @@ class _FloatingAction extends StatelessWidget {
             icon,
             size: 20,
             color: isActive
-                ? PromptoreColors.mutedGold
-                : PromptoreColors.dustySepia,
+                ? PromptoreColorExtension.of(context).mutedGold
+                : PromptoreColorExtension.of(context).dustySepia,
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: PromptoreTypography.metaSmall.copyWith(
               color: isActive
-                  ? PromptoreColors.mutedGold
-                  : PromptoreColors.dustySepia,
+                  ? PromptoreColorExtension.of(context).mutedGold
+                  : PromptoreColorExtension.of(context).dustySepia,
               fontSize: 8,
               letterSpacing: 0.5,
             ),

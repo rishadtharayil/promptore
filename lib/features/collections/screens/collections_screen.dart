@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/colors.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/data/mock_data.dart';
@@ -23,7 +25,7 @@ class CollectionsScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: PromptoreColors.surfaceElevated,
+        backgroundColor: PromptoreColorExtension.of(context).surfaceElevated,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Dimensions.radiusMd),
         ),
@@ -37,30 +39,30 @@ class CollectionsScreen extends ConsumerWidget {
             TextField(
               controller: nameController,
               autofocus: true,
-              style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.parchment),
+              style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColorExtension.of(context).parchment),
               decoration: InputDecoration(
                 hintText: 'Collection Name',
-                hintStyle: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.charcoal),
+                hintStyle: PromptoreTypography.bodySmall.copyWith(color: PromptoreColorExtension.of(context).charcoal),
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: PromptoreColors.warmGray.withValues(alpha: 0.3)),
+                  borderSide: BorderSide(color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3)),
                 ),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: PromptoreColors.mutedGold),
+                  borderSide: BorderSide(color: PromptoreColorExtension.of(context).mutedGold),
                 ),
               ),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: descController,
-              style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.parchment),
+              style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColorExtension.of(context).parchment),
               decoration: InputDecoration(
                 hintText: 'Description (Optional)',
-                hintStyle: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.charcoal),
+                hintStyle: PromptoreTypography.bodySmall.copyWith(color: PromptoreColorExtension.of(context).charcoal),
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: PromptoreColors.warmGray.withValues(alpha: 0.3)),
+                  borderSide: BorderSide(color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3)),
                 ),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: PromptoreColors.mutedGold),
+                  borderSide: BorderSide(color: PromptoreColorExtension.of(context).mutedGold),
                 ),
               ),
             ),
@@ -71,7 +73,7 @@ class CollectionsScreen extends ConsumerWidget {
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               'Cancel',
-              style: PromptoreTypography.metaMedium.copyWith(color: PromptoreColors.dustySepia),
+              style: PromptoreTypography.metaMedium.copyWith(color: PromptoreColorExtension.of(context).dustySepia),
             ),
           ),
           TextButton(
@@ -88,10 +90,10 @@ class CollectionsScreen extends ConsumerWidget {
                     content: Text(
                       'Collection "$name" created',
                       style: PromptoreTypography.bodySmall.copyWith(
-                        color: PromptoreColors.parchment,
+                        color: PromptoreColorExtension.of(context).parchment,
                       ),
                     ),
-                    backgroundColor: PromptoreColors.surfaceElevated,
+                    backgroundColor: PromptoreColorExtension.of(context).surfaceElevated,
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -99,7 +101,7 @@ class CollectionsScreen extends ConsumerWidget {
             },
             child: Text(
               'Create',
-              style: PromptoreTypography.metaMedium.copyWith(color: PromptoreColors.mutedGold),
+              style: PromptoreTypography.metaMedium.copyWith(color: PromptoreColorExtension.of(context).mutedGold),
             ),
           ),
         ],
@@ -116,7 +118,7 @@ class CollectionsScreen extends ConsumerWidget {
 
     return GrainOverlay(
       child: Scaffold(
-        backgroundColor: PromptoreColors.background,
+        backgroundColor: PromptoreColorExtension.of(context).background,
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -161,7 +163,7 @@ class CollectionsScreen extends ConsumerWidget {
                           ),
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: PromptoreColors.mutedGold
+                              color: PromptoreColorExtension.of(context).mutedGold
                                   .withValues(alpha: 0.4),
                               width: 0.5,
                             ),
@@ -174,13 +176,13 @@ class CollectionsScreen extends ConsumerWidget {
                               Icon(
                                 Icons.add,
                                 size: 14,
-                                color: PromptoreColors.mutedGold,
+                                color: PromptoreColorExtension.of(context).mutedGold,
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 'Create',
                                 style: PromptoreTypography.metaMedium.copyWith(
-                                  color: PromptoreColors.mutedGold,
+                                  color: PromptoreColorExtension.of(context).mutedGold,
                                 ),
                               ),
                             ],
@@ -206,13 +208,13 @@ class CollectionsScreen extends ConsumerWidget {
                           Icon(
                             Icons.collections_bookmark_outlined,
                             size: 48,
-                            color: PromptoreColors.charcoal,
+                            color: PromptoreColorExtension.of(context).charcoal,
                           ),
                           const SizedBox(height: 16),
                           Text(
                             'Your archive is empty',
                             style: PromptoreTypography.titleMedium.copyWith(
-                              color: PromptoreColors.dustySepia,
+                              color: PromptoreColorExtension.of(context).dustySepia,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -262,7 +264,7 @@ class CollectionsScreen extends ConsumerWidget {
                       'DISCOVER COLLECTIONS',
                       style: PromptoreTypography.metaLarge.copyWith(
                         letterSpacing: 2.0,
-                        color: PromptoreColors.dustySepia,
+                        color: PromptoreColorExtension.of(context).dustySepia,
                       ),
                     ),
                   ).animate().fadeIn(duration: 400.ms, delay: 400.ms),
@@ -310,17 +312,17 @@ class _CollectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = collection.coverColor ?? PromptoreColors.mutedGold;
+    final accentColor = collection.coverColor ?? PromptoreColorExtension.of(context).mutedGold;
 
     return GestureDetector(
       onTap: () => context.push('/collections/${collection.id}'),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: PromptoreColors.surface,
+          color: PromptoreColorExtension.of(context).surface,
           borderRadius: BorderRadius.circular(Dimensions.cardRadius),
           border: Border.all(
-            color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+            color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
             width: 0.5,
           ),
         ),

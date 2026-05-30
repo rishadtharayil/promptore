@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ThemeModeNotifier extends Notifier<ThemeMode> {
   @override
   ThemeMode build() {
-    return ThemeMode.dark; // Default is dark mode
+    return ThemeMode.system; // Default is system mode
   }
 
   void toggleTheme() {

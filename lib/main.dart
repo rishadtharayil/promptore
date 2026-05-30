@@ -25,20 +25,6 @@ class PromptoreApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
-    final isLight = themeMode == ThemeMode.light;
-
-    // Sync global theme flag
-    PromptoreTheme.isLight = isLight;
-
-    // Immersive status bar dynamically adapting to light/dark
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: isLight ? Brightness.dark : Brightness.light,
-        systemNavigationBarColor: PromptoreColors.background,
-        systemNavigationBarIconBrightness: isLight ? Brightness.dark : Brightness.light,
-      ),
-    );
 
     return MaterialApp.router(
       title: 'PROMPTORE',

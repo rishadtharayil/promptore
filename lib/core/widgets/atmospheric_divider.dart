@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import '../theme/colors.dart';
 
 /// Atmospheric divider — faded gradient line instead of harsh borders.
@@ -25,8 +26,8 @@ class AtmosphericDivider extends StatelessWidget {
           gradient: LinearGradient(
             colors: [
               Colors.transparent,
-              PromptoreColors.warmGray,
-              PromptoreColors.warmGray,
+              PromptoreColorExtension.of(context).warmGray,
+              PromptoreColorExtension.of(context).warmGray,
               Colors.transparent,
             ],
             stops: [0.0, 0.2, 0.8, 1.0],

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/colors.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/widgets/grain_overlay.dart';
@@ -34,7 +36,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: PromptoreColors.background,
+      backgroundColor: PromptoreColorExtension.of(context).background,
       body: GrainOverlay(
         child: Stack(
           children: [
@@ -85,8 +87,8 @@ class _PageOne extends StatelessWidget {
                 center: const Alignment(0.0, -0.2),
                 radius: 0.9,
                 colors: [
-                  PromptoreColors.mutedGold.withValues(alpha: 0.07),
-                  PromptoreColors.mutedGold.withValues(alpha: 0.02),
+                  PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.07),
+                  PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.02),
                   Colors.transparent,
                 ],
                 stops: const [0.0, 0.4, 1.0],
@@ -139,7 +141,7 @@ class _PageOne extends StatelessWidget {
                 'fragments of thought preserved in amber, '
                 'waiting for the right mind to find them.',
                 style: PromptoreTypography.bodyMedium.copyWith(
-                  color: PromptoreColors.dustySepia.withValues(alpha: 0.8),
+                  color: PromptoreColorExtension.of(context).dustySepia.withValues(alpha: 0.8),
                   height: 1.7,
                 ),
               )
@@ -180,7 +182,7 @@ class _PageTwo extends StatelessWidget {
     return Stack(
       children: [
         // Floating prompt card previews
-        ..._buildFloatingCards(size),
+        ..._buildFloatingCards(context, size),
 
         // Main content
         Padding(
@@ -219,7 +221,7 @@ class _PageTwo extends StatelessWidget {
                 'that resonate. Every echo amplifies '
                 'something worth preserving.',
                 style: PromptoreTypography.bodyMedium.copyWith(
-                  color: PromptoreColors.dustySepia.withValues(alpha: 0.8),
+                  color: PromptoreColorExtension.of(context).dustySepia.withValues(alpha: 0.8),
                   height: 1.7,
                 ),
               )
@@ -246,7 +248,7 @@ class _PageTwo extends StatelessWidget {
   }
 
   /// Three small floating prompt card previews that drift slowly
-  List<Widget> _buildFloatingCards(Size size) {
+  List<Widget> _buildFloatingCards(BuildContext context, Size size) {
     final cards = [
       _FloatingCardData(
         title: 'The Machine That\nDreams In Rain',
@@ -284,9 +286,9 @@ class _PageTwo extends StatelessWidget {
               vertical: 12,
             ),
             decoration: BoxDecoration(
-              color: PromptoreColors.surface,
+              color: PromptoreColorExtension.of(context).surface,
               border: Border.all(
-                color: PromptoreColors.warmGray.withValues(alpha: 0.5),
+                color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.5),
                 width: 0.5,
               ),
               borderRadius: BorderRadius.circular(Dimensions.radiusSm),
@@ -294,7 +296,7 @@ class _PageTwo extends StatelessWidget {
             child: Text(
               data.title,
               style: PromptoreTypography.metaMedium.copyWith(
-                color: PromptoreColors.dustySepia.withValues(alpha: 0.7),
+                color: PromptoreColorExtension.of(context).dustySepia.withValues(alpha: 0.7),
                 height: 1.5,
               ),
             ),
@@ -433,7 +435,7 @@ class _BeginExploringButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(Dimensions.radiusXl),
             boxShadow: [
               BoxShadow(
-                color: PromptoreColors.mutedGold.withValues(alpha: 0.2),
+                color: PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.2),
                 blurRadius: 40,
                 spreadRadius: 8,
               ),
@@ -461,7 +463,7 @@ class _BeginExploringButton extends StatelessWidget {
           child: InkWell(
             onTap: onPressed,
             borderRadius: BorderRadius.circular(Dimensions.radiusXl),
-            splashColor: PromptoreColors.mutedGold.withValues(alpha: 0.1),
+            splashColor: PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.1),
             child: Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 48,
@@ -469,16 +471,16 @@ class _BeginExploringButton extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: PromptoreColors.mutedGold.withValues(alpha: 0.6),
+                  color: PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.6),
                   width: 1,
                 ),
                 borderRadius: BorderRadius.circular(Dimensions.radiusXl),
-                color: PromptoreColors.mutedGold.withValues(alpha: 0.08),
+                color: PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.08),
               ),
               child: Text(
                 'Begin Exploring',
                 style: PromptoreTypography.titleMedium.copyWith(
-                  color: PromptoreColors.mutedGold,
+                  color: PromptoreColorExtension.of(context).mutedGold,
                   letterSpacing: 1.5,
                   fontWeight: FontWeight.w500,
                 ),
@@ -515,13 +517,13 @@ class _PageIndicator extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: isActive
-                ? PromptoreColors.mutedGold
-                : PromptoreColors.mutedGold.withValues(alpha: 0.25),
+                ? PromptoreColorExtension.of(context).mutedGold
+                : PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.25),
             boxShadow: isActive
                 ? [
                     BoxShadow(
                       color:
-                          PromptoreColors.mutedGold.withValues(alpha: 0.3),
+                          PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.3),
                       blurRadius: 8,
                       spreadRadius: 1,
                     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:promptore/core/theme/colors.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/data/mock_data.dart';
@@ -63,10 +65,10 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
           content: Text(
             'Title and content cannot be empty',
             style: PromptoreTypography.bodySmall.copyWith(
-              color: PromptoreColors.parchment,
+              color: PromptoreColorExtension.of(context).parchment,
             ),
           ),
-          backgroundColor: PromptoreColors.surfaceElevated,
+          backgroundColor: PromptoreColorExtension.of(context).surfaceElevated,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -115,10 +117,10 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
         content: Text(
           'Remix published to the archive',
           style: PromptoreTypography.bodySmall.copyWith(
-            color: PromptoreColors.parchment,
+            color: PromptoreColorExtension.of(context).parchment,
           ),
         ),
-        backgroundColor: PromptoreColors.surfaceElevated,
+        backgroundColor: PromptoreColorExtension.of(context).surfaceElevated,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Dimensions.radiusMd),
@@ -132,16 +134,16 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
   Widget build(BuildContext context) {
     return GrainOverlay(
       child: Scaffold(
-        backgroundColor: PromptoreColors.background,
+        backgroundColor: PromptoreColorExtension.of(context).background,
         appBar: AppBar(
-          backgroundColor: PromptoreColors.background,
+          backgroundColor: PromptoreColorExtension.of(context).background,
           elevation: 0,
           scrolledUnderElevation: 0,
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios_rounded,
               size: 20,
-              color: PromptoreColors.dustySepia,
+              color: PromptoreColorExtension.of(context).dustySepia,
             ),
             onPressed: () => context.pop(),
           ),
@@ -169,13 +171,13 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                     Icon(
                       Icons.call_split_rounded,
                       size: 14,
-                      color: PromptoreColors.fadedBronze,
+                      color: PromptoreColorExtension.of(context).fadedBronze,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       'Original by ${_original.authorName}',
                       style: PromptoreTypography.metaLarge.copyWith(
-                        color: PromptoreColors.fadedBronze,
+                        color: PromptoreColorExtension.of(context).fadedBronze,
                       ),
                     ),
                   ],
@@ -192,12 +194,12 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                     duration: const Duration(milliseconds: 300),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: PromptoreColors.surface,
+                      color: PromptoreColorExtension.of(context).surface,
                       borderRadius:
                           BorderRadius.circular(Dimensions.radiusSm),
                       border: Border.all(
                         color:
-                            PromptoreColors.warmGray.withValues(alpha: 0.3),
+                            PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
                         width: 0.5,
                       ),
                     ),
@@ -210,7 +212,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                               child: Text(
                                 _original.title,
                                 style: PromptoreTypography.titleSmall.copyWith(
-                                  color: PromptoreColors.parchment,
+                                  color: PromptoreColorExtension.of(context).parchment,
                                   fontSize: 14,
                                 ),
                               ),
@@ -220,7 +222,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                                   ? Icons.expand_less
                                   : Icons.expand_more,
                               size: 18,
-                              color: PromptoreColors.charcoal,
+                              color: PromptoreColorExtension.of(context).charcoal,
                             ),
                           ],
                         ),
@@ -248,14 +250,14 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                     Container(
                       width: 24,
                       height: 1,
-                      color: PromptoreColors.mutedGold.withValues(alpha: 0.3),
+                      color: PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.3),
                     ),
                     const SizedBox(width: 12),
                     Text(
                       'YOUR REMIX',
                       style: PromptoreTypography.metaLarge.copyWith(
                         letterSpacing: 2.0,
-                        color: PromptoreColors.mutedGold,
+                        color: PromptoreColorExtension.of(context).mutedGold,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -263,7 +265,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                       child: Container(
                         height: 1,
                         color:
-                            PromptoreColors.mutedGold.withValues(alpha: 0.3),
+                            PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.3),
                       ),
                     ),
                   ],
@@ -277,7 +279,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                   style: GoogleFonts.cormorantGaramond(
                     fontSize: 22,
                     fontWeight: FontWeight.w500,
-                    color: PromptoreColors.parchment,
+                    color: PromptoreColorExtension.of(context).parchment,
                     height: 1.3,
                   ),
                   decoration: InputDecoration(
@@ -285,7 +287,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                     hintStyle: GoogleFonts.cormorantGaramond(
                       fontSize: 22,
                       fontWeight: FontWeight.w300,
-                      color: PromptoreColors.charcoal,
+                      color: PromptoreColorExtension.of(context).charcoal,
                     ),
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
@@ -310,7 +312,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                   decoration: InputDecoration(
                     hintText: 'Your remixed content...',
                     hintStyle: PromptoreTypography.bodyMedium.copyWith(
-                      color: PromptoreColors.charcoal,
+                      color: PromptoreColorExtension.of(context).charcoal,
                     ),
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
@@ -342,14 +344,14 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                           decoration: BoxDecoration(
                             color: isSelected
                                 ? cat.color.withValues(alpha: 0.15)
-                                : PromptoreColors.surface,
+                                : PromptoreColorExtension.of(context).surface,
                             borderRadius: BorderRadius.circular(
                               Dimensions.radiusFull,
                             ),
                             border: Border.all(
                               color: isSelected
                                   ? cat.color.withValues(alpha: 0.5)
-                                  : PromptoreColors.warmGray
+                                  : PromptoreColorExtension.of(context).warmGray
                                       .withValues(alpha: 0.4),
                               width: 0.5,
                             ),
@@ -370,7 +372,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                                 style: PromptoreTypography.metaSmall.copyWith(
                                   color: isSelected
                                       ? cat.color
-                                      : PromptoreColors.dustySepia,
+                                      : PromptoreColorExtension.of(context).dustySepia,
                                   fontSize: 10,
                                 ),
                               ),
@@ -396,7 +398,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                       ),
                       decoration: BoxDecoration(
                         color:
-                            PromptoreColors.warmGray.withValues(alpha: 0.3),
+                            PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
                         borderRadius:
                             BorderRadius.circular(Dimensions.radiusFull),
                       ),
@@ -406,7 +408,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                           Text(
                             tag,
                             style: PromptoreTypography.metaSmall.copyWith(
-                              color: PromptoreColors.dustySepia,
+                              color: PromptoreColorExtension.of(context).dustySepia,
                             ),
                           ),
                           const SizedBox(width: 4),
@@ -417,7 +419,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                             child: Icon(
                               Icons.close,
                               size: 12,
-                              color: PromptoreColors.charcoal,
+                              color: PromptoreColorExtension.of(context).charcoal,
                             ),
                           ),
                         ],
@@ -436,7 +438,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
-                        color: PromptoreColors.mutedGold,
+                        color: PromptoreColorExtension.of(context).mutedGold,
                         borderRadius:
                             BorderRadius.circular(Dimensions.radiusMd),
                       ),
@@ -444,7 +446,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
                         child: Text(
                           'Publish Remix',
                           style: PromptoreTypography.labelLarge.copyWith(
-                            color: PromptoreColors.background,
+                            color: PromptoreColorExtension.of(context).background,
                             letterSpacing: 1.0,
                           ),
                         ),

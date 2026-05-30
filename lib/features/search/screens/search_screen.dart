@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/colors.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/models/models.dart';
@@ -61,7 +63,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     return GrainOverlay(
       child: Scaffold(
-        backgroundColor: PromptoreColors.background,
+        backgroundColor: PromptoreColorExtension.of(context).background,
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,11 +81,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
-                          color: PromptoreColors.surface,
+                          color: PromptoreColorExtension.of(context).surface,
                           borderRadius:
                               BorderRadius.circular(Dimensions.radiusMd),
                           border: Border.all(
-                            color: PromptoreColors.warmGray
+                            color: PromptoreColorExtension.of(context).warmGray
                                 .withValues(alpha: 0.4),
                             width: 0.5,
                           ),
@@ -92,18 +94,18 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           controller: _controller,
                           focusNode: _focusNode,
                           style: PromptoreTypography.bodyMedium.copyWith(
-                            color: PromptoreColors.parchment,
+                            color: PromptoreColorExtension.of(context).parchment,
                           ),
                           decoration: InputDecoration(
                             hintText: 'Search the archive...',
                             hintStyle: PromptoreTypography.bodyMedium.copyWith(
-                              color: PromptoreColors.charcoal,
+                              color: PromptoreColorExtension.of(context).charcoal,
                             ),
                             border: InputBorder.none,
                             icon: Icon(
                               Icons.search_rounded,
                               size: 18,
-                              color: PromptoreColors.charcoal,
+                              color: PromptoreColorExtension.of(context).charcoal,
                             ),
                           ),
                           onChanged: (v) => setState(() => _query = v),
@@ -116,7 +118,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       child: Icon(
                         Icons.close_rounded,
                         size: 22,
-                        color: PromptoreColors.dustySepia,
+                        color: PromptoreColorExtension.of(context).dustySepia,
                       ),
                     ),
                   ],
@@ -152,7 +154,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             'RECENT WHISPERS',
             style: PromptoreTypography.metaLarge.copyWith(
               letterSpacing: 2.0,
-              color: PromptoreColors.dustySepia,
+              color: PromptoreColorExtension.of(context).dustySepia,
             ),
           ).animate().fadeIn(duration: 400.ms, delay: 100.ms),
 
@@ -173,18 +175,18 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: PromptoreColors.surface,
+                    color: PromptoreColorExtension.of(context).surface,
                     borderRadius:
                         BorderRadius.circular(Dimensions.radiusFull),
                     border: Border.all(
-                      color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+                      color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
                       width: 0.5,
                     ),
                   ),
                   child: Text(
                     entry.value,
                     style: PromptoreTypography.metaMedium.copyWith(
-                      color: PromptoreColors.dustySepia,
+                      color: PromptoreColorExtension.of(context).dustySepia,
                     ),
                   ),
                 ),
@@ -215,14 +217,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           Icon(
             Icons.graphic_eq_rounded,
             size: 40,
-            color: PromptoreColors.charcoal,
+            color: PromptoreColorExtension.of(context).charcoal,
           ),
           const SizedBox(height: 16),
           Text(
             'No echoes found in the archive',
             style: PromptoreTypography.accent.copyWith(
               fontSize: 14,
-              color: PromptoreColors.dustySepia,
+              color: PromptoreColorExtension.of(context).dustySepia,
             ),
           ),
         ],
@@ -247,10 +249,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               vertical: 14,
             ),
             decoration: BoxDecoration(
-              color: PromptoreColors.surface,
+              color: PromptoreColorExtension.of(context).surface,
               borderRadius: BorderRadius.circular(Dimensions.radiusSm),
               border: Border.all(
-                color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+                color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
                 width: 0.5,
               ),
             ),
@@ -288,7 +290,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 12,
-                  color: PromptoreColors.charcoal,
+                  color: PromptoreColorExtension.of(context).charcoal,
                 ),
               ],
             ),

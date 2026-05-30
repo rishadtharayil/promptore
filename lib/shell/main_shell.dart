@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import '../core/theme/colors.dart';
 import '../core/theme/typography.dart';
 import '../core/theme/dimensions.dart';
+import '../core/theme/promptore_theme.dart';
 
 /// Main shell with atmospheric bottom navigation.
 /// Five tabs: Feed, Explore, Compose, Collections, Profile.
@@ -16,7 +18,7 @@ class MainShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: PromptoreColors.background,
+      backgroundColor: PromptoreColorExtension.of(context).background,
       body: navigationShell,
       bottomNavigationBar: _buildBottomNav(context),
     );
@@ -27,10 +29,10 @@ class MainShell extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: PromptoreColors.surface,
+        color: PromptoreColorExtension.of(context).surface,
         border: Border(
           top: BorderSide(
-            color: PromptoreColors.warmGray,
+            color: PromptoreColorExtension.of(context).warmGray,
             width: 0.5,
           ),
         ),
@@ -121,8 +123,8 @@ class _NavItem extends StatelessWidget {
               child: Icon(
                 isActive ? activeIcon : icon,
                 color: isActive
-                    ? PromptoreColors.mutedGold
-                    : PromptoreColors.charcoal,
+                    ? PromptoreColorExtension.of(context).mutedGold
+                    : PromptoreColorExtension.of(context).charcoal,
                 size: 22,
               ),
             ),
@@ -131,8 +133,8 @@ class _NavItem extends StatelessWidget {
               label,
               style: PromptoreTypography.metaSmall.copyWith(
                 color: isActive
-                    ? PromptoreColors.mutedGold
-                    : PromptoreColors.charcoal,
+                    ? PromptoreColorExtension.of(context).mutedGold
+                    : PromptoreColorExtension.of(context).charcoal,
                 fontSize: 9,
                 letterSpacing: 1.0,
               ),
@@ -163,19 +165,21 @@ class _ComposeButton extends StatelessWidget {
         height: 44,
         decoration: BoxDecoration(
           color: isActive
-              ? PromptoreColors.mutedGold
-              : PromptoreColors.mutedGold.withValues(alpha: 0.15),
+              ? PromptoreColorExtension.of(context).mutedGold
+              : PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: PromptoreColors.mutedGold.withValues(alpha: 0.3),
+            color: PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.3),
             width: 0.5,
           ),
         ),
         child: Icon(
           Icons.edit_outlined,
           color: isActive
-              ? PromptoreColors.background
-              : PromptoreColors.mutedGold,
+              ? (Theme.of(context).brightness == Brightness.light
+                  ? PromptoreColors.inkDark
+                  : PromptoreColorExtension.of(context).background)
+              : PromptoreColorExtension.of(context).mutedGold,
           size: 20,
         ),
       ),

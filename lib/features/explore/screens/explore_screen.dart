@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/colors.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/models/models.dart';
@@ -29,7 +31,7 @@ class ExploreScreen extends ConsumerWidget {
 
     return GrainOverlay(
       child: Scaffold(
-        backgroundColor: PromptoreColors.background,
+        backgroundColor: PromptoreColorExtension.of(context).background,
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -65,10 +67,10 @@ class ExploreScreen extends ConsumerWidget {
                         vertical: 14,
                       ),
                       decoration: BoxDecoration(
-                        color: PromptoreColors.surface,
+                        color: PromptoreColorExtension.of(context).surface,
                         borderRadius: BorderRadius.circular(Dimensions.radiusMd),
                         border: Border.all(
-                          color: PromptoreColors.warmGray.withValues(alpha: 0.4),
+                          color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.4),
                           width: 0.5,
                         ),
                       ),
@@ -77,13 +79,13 @@ class ExploreScreen extends ConsumerWidget {
                           Icon(
                             Icons.search_rounded,
                             size: 18,
-                            color: PromptoreColors.charcoal,
+                            color: PromptoreColorExtension.of(context).charcoal,
                           ),
                           const SizedBox(width: 12),
                           Text(
                             'Search the archive...',
                             style: PromptoreTypography.bodyMedium.copyWith(
-                              color: PromptoreColors.charcoal,
+                              color: PromptoreColorExtension.of(context).charcoal,
                             ),
                           ),
                         ],
@@ -103,7 +105,7 @@ class ExploreScreen extends ConsumerWidget {
                     'TRENDING',
                     style: PromptoreTypography.metaLarge.copyWith(
                       letterSpacing: 2.0,
-                      color: PromptoreColors.dustySepia,
+                      color: PromptoreColorExtension.of(context).dustySepia,
                     ),
                   ),
                 ).animate().fadeIn(duration: 400.ms, delay: 150.ms),
@@ -128,11 +130,11 @@ class ExploreScreen extends ConsumerWidget {
                           margin: const EdgeInsets.only(right: 12),
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: PromptoreColors.surface,
+                            color: PromptoreColorExtension.of(context).surface,
                             borderRadius:
                                 BorderRadius.circular(Dimensions.radiusMd),
                             border: Border.all(
-                              color: PromptoreColors.warmGray
+                              color: PromptoreColorExtension.of(context).warmGray
                                   .withValues(alpha: 0.3),
                               width: 0.5,
                             ),
@@ -165,7 +167,7 @@ class ExploreScreen extends ConsumerWidget {
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: PromptoreTypography.titleSmall.copyWith(
-                                    color: PromptoreColors.parchment,
+                                    color: PromptoreColorExtension.of(context).parchment,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -175,7 +177,7 @@ class ExploreScreen extends ConsumerWidget {
                                   Icon(
                                     Icons.graphic_eq_rounded,
                                     size: 12,
-                                    color: PromptoreColors.charcoal,
+                                    color: PromptoreColorExtension.of(context).charcoal,
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
@@ -214,7 +216,7 @@ class ExploreScreen extends ConsumerWidget {
                     'CATEGORIES',
                     style: PromptoreTypography.metaLarge.copyWith(
                       letterSpacing: 2.0,
-                      color: PromptoreColors.dustySepia,
+                      color: PromptoreColorExtension.of(context).dustySepia,
                     ),
                   ),
                 ).animate().fadeIn(duration: 400.ms, delay: 300.ms),
@@ -262,7 +264,7 @@ class ExploreScreen extends ConsumerWidget {
                     'RISING CREATORS',
                     style: PromptoreTypography.metaLarge.copyWith(
                       letterSpacing: 2.0,
-                      color: PromptoreColors.dustySepia,
+                      color: PromptoreColorExtension.of(context).dustySepia,
                     ),
                   ),
                 ).animate().fadeIn(duration: 400.ms, delay: 400.ms),
@@ -289,9 +291,9 @@ class ExploreScreen extends ConsumerWidget {
                               height: 48,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: PromptoreColors.surfaceElevated,
+                                color: PromptoreColorExtension.of(context).surfaceElevated,
                                 border: Border.all(
-                                  color: PromptoreColors.mutedGold
+                                  color: PromptoreColorExtension.of(context).mutedGold
                                       .withValues(alpha: 0.3),
                                   width: 0.5,
                                 ),
@@ -301,7 +303,7 @@ class ExploreScreen extends ConsumerWidget {
                                   user.displayName[0],
                                   style:
                                       PromptoreTypography.titleMedium.copyWith(
-                                    color: PromptoreColors.mutedGold,
+                                    color: PromptoreColorExtension.of(context).mutedGold,
                                     fontSize: 18,
                                   ),
                                 ),
@@ -311,7 +313,7 @@ class ExploreScreen extends ConsumerWidget {
                             Text(
                               user.displayName.split(' ').first,
                               style: PromptoreTypography.metaSmall.copyWith(
-                                color: PromptoreColors.parchment,
+                                color: PromptoreColorExtension.of(context).parchment,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -350,7 +352,7 @@ class ExploreScreen extends ConsumerWidget {
                     'RECENT COLLECTIONS',
                     style: PromptoreTypography.metaLarge.copyWith(
                       letterSpacing: 2.0,
-                      color: PromptoreColors.dustySepia,
+                      color: PromptoreColorExtension.of(context).dustySepia,
                     ),
                   ),
                 ).animate().fadeIn(duration: 400.ms, delay: 500.ms),
@@ -374,11 +376,11 @@ class ExploreScreen extends ConsumerWidget {
                           margin: const EdgeInsets.only(right: 12),
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: PromptoreColors.surface,
+                            color: PromptoreColorExtension.of(context).surface,
                             borderRadius:
                                 BorderRadius.circular(Dimensions.radiusMd),
                             border: Border.all(
-                              color: PromptoreColors.warmGray
+                              color: PromptoreColorExtension.of(context).warmGray
                                   .withValues(alpha: 0.3),
                               width: 0.5,
                             ),
@@ -391,7 +393,7 @@ class ExploreScreen extends ConsumerWidget {
                                 height: 3,
                                 decoration: BoxDecoration(
                                   color: col.coverColor ??
-                                      PromptoreColors.mutedGold,
+                                      PromptoreColorExtension.of(context).mutedGold,
                                   borderRadius: BorderRadius.circular(2),
                                 ),
                               ),
@@ -401,7 +403,7 @@ class ExploreScreen extends ConsumerWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: PromptoreTypography.titleSmall.copyWith(
-                                  color: PromptoreColors.parchment,
+                                  color: PromptoreColorExtension.of(context).parchment,
                                   fontSize: 13,
                                 ),
                               ),
@@ -455,10 +457,10 @@ class _CategoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: PromptoreColors.surface,
+        color: PromptoreColorExtension.of(context).surface,
         borderRadius: BorderRadius.circular(Dimensions.radiusMd),
         border: Border.all(
-          color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+          color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
           width: 0.5,
         ),
         gradient: LinearGradient(
@@ -466,7 +468,7 @@ class _CategoryTile extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             category.color.withValues(alpha: 0.08),
-            PromptoreColors.surface,
+            PromptoreColorExtension.of(context).surface,
           ],
         ),
       ),
@@ -488,7 +490,7 @@ class _CategoryTile extends StatelessWidget {
               Text(
                 category.label,
                 style: PromptoreTypography.labelMedium.copyWith(
-                  color: PromptoreColors.parchment,
+                  color: PromptoreColorExtension.of(context).parchment,
                   fontSize: 11,
                 ),
                 maxLines: 1,

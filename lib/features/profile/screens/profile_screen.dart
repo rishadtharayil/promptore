@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/colors.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/data/mock_data.dart';
@@ -48,7 +50,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     return GrainOverlay(
       child: Scaffold(
-        backgroundColor: PromptoreColors.background,
+        backgroundColor: PromptoreColorExtension.of(context).background,
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -71,7 +73,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           return Icon(
                             isLight ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
                             size: 20,
-                            color: PromptoreColors.dustySepia,
+                            color: PromptoreColorExtension.of(context).dustySepia,
                           );
                         },
                       ),
@@ -88,9 +90,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   height: Dimensions.avatarProfile,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: PromptoreColors.surfaceElevated,
+                    color: PromptoreColorExtension.of(context).surfaceElevated,
                     border: Border.all(
-                      color: PromptoreColors.mutedGold.withValues(alpha: 0.4),
+                      color: PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.4),
                       width: 1.5,
                     ),
                   ),
@@ -98,7 +100,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     child: Text(
                       user.displayName[0],
                       style: PromptoreTypography.displayMedium.copyWith(
-                        color: PromptoreColors.mutedGold,
+                        color: PromptoreColorExtension.of(context).mutedGold,
                         fontSize: 36,
                       ),
                     ),
@@ -187,7 +189,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 40.0),
                       child: Text(
                         'You have not authored any prompts yet.',
-                        style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.charcoal),
+                        style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColorExtension.of(context).charcoal),
                       ),
                     ),
                 ] else if (_tabIndex == 1) ...[
@@ -199,7 +201,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 40.0),
                       child: Text(
                         'You have not echoed any prompts yet.',
-                        style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.charcoal),
+                        style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColorExtension.of(context).charcoal),
                       ),
                     ),
                 ] else ...[
@@ -215,11 +217,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ),
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: PromptoreColors.surface,
+                            color: PromptoreColorExtension.of(context).surface,
                             borderRadius:
                                 BorderRadius.circular(Dimensions.radiusSm),
                             border: Border.all(
-                              color: PromptoreColors.warmGray
+                              color: PromptoreColorExtension.of(context).warmGray
                                   .withValues(alpha: 0.3),
                               width: 0.5,
                             ),
@@ -231,7 +233,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 height: 32,
                                 decoration: BoxDecoration(
                                   color: col.coverColor ??
-                                      PromptoreColors.mutedGold,
+                                      PromptoreColorExtension.of(context).mutedGold,
                                   borderRadius: BorderRadius.circular(2),
                                 ),
                               ),
@@ -274,7 +276,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 40.0),
                       child: Text(
                         'You have no collections yet.',
-                        style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.charcoal),
+                        style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColorExtension.of(context).charcoal),
                       ),
                     ),
                 ],
@@ -304,7 +306,7 @@ class _StatItem extends StatelessWidget {
                 ? '${(value / 1000).toStringAsFixed(1)}k'
                 : '$value',
             style: PromptoreTypography.titleMedium.copyWith(
-              color: PromptoreColors.parchment,
+              color: PromptoreColorExtension.of(context).parchment,
             ),
           ),
           const SizedBox(height: 2),
@@ -328,7 +330,7 @@ class _StatDivider extends StatelessWidget {
     return Container(
       width: 1,
       height: 24,
-      color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+      color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
     );
   }
 }
@@ -354,7 +356,7 @@ class _TabBar extends StatelessWidget {
               border: Border(
                 bottom: BorderSide(
                   color: isActive
-                      ? PromptoreColors.mutedGold
+                      ? PromptoreColorExtension.of(context).mutedGold
                       : Colors.transparent,
                   width: 1.5,
                 ),
@@ -364,8 +366,8 @@ class _TabBar extends StatelessWidget {
               entry.value,
               style: PromptoreTypography.labelMedium.copyWith(
                 color: isActive
-                    ? PromptoreColors.mutedGold
-                    : PromptoreColors.charcoal,
+                    ? PromptoreColorExtension.of(context).mutedGold
+                    : PromptoreColorExtension.of(context).charcoal,
                 letterSpacing: 0.5,
               ),
             ),
@@ -393,10 +395,10 @@ class _CompactPromptTile extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: PromptoreColors.surface,
+          color: PromptoreColorExtension.of(context).surface,
           borderRadius: BorderRadius.circular(Dimensions.radiusSm),
           border: Border.all(
-            color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+            color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
             width: 0.5,
           ),
         ),
@@ -425,7 +427,7 @@ class _CompactPromptTile extends StatelessWidget {
             Icon(
               Icons.graphic_eq_rounded,
               size: 12,
-              color: PromptoreColors.charcoal,
+              color: PromptoreColorExtension.of(context).charcoal,
             ),
             const SizedBox(width: 4),
             Text(

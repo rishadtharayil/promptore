@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/colors.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/providers/collections_provider.dart';
@@ -31,20 +33,20 @@ class CollectionDetailScreen extends ConsumerWidget {
         .where((p) => collection.promptIds.contains(p.id))
         .toList();
         
-    final accentColor = collection.coverColor ?? PromptoreColors.mutedGold;
+    final accentColor = collection.coverColor ?? PromptoreColorExtension.of(context).mutedGold;
 
     return GrainOverlay(
       child: Scaffold(
-        backgroundColor: PromptoreColors.background,
+        backgroundColor: PromptoreColorExtension.of(context).background,
         appBar: AppBar(
-          backgroundColor: PromptoreColors.background,
+          backgroundColor: PromptoreColorExtension.of(context).background,
           elevation: 0,
           scrolledUnderElevation: 0,
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios_rounded,
               size: 20,
-              color: PromptoreColors.dustySepia,
+              color: PromptoreColorExtension.of(context).dustySepia,
             ),
             onPressed: () => context.pop(),
           ),
@@ -136,7 +138,7 @@ class CollectionDetailScreen extends ConsumerWidget {
                     child: Text(
                       'This collection is empty',
                       style: PromptoreTypography.bodyMedium.copyWith(
-                        color: PromptoreColors.charcoal,
+                        color: PromptoreColorExtension.of(context).charcoal,
                       ),
                     ),
                   ),

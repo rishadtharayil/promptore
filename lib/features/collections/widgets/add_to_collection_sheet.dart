@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:promptore/core/theme/colors.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/providers/collections_provider.dart';
@@ -16,7 +18,7 @@ class AddToCollectionSheet extends ConsumerWidget {
   static void show(BuildContext context, String promptId) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: PromptoreColors.surfaceElevated,
+      backgroundColor: PromptoreColorExtension.of(context).surfaceElevated,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(Dimensions.sheetRadius),
@@ -33,7 +35,7 @@ class AddToCollectionSheet extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: PromptoreColors.surfaceElevated,
+        backgroundColor: PromptoreColorExtension.of(context).surfaceElevated,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Dimensions.radiusMd),
         ),
@@ -47,30 +49,30 @@ class AddToCollectionSheet extends ConsumerWidget {
             TextField(
               controller: nameController,
               autofocus: true,
-              style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.parchment),
+              style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColorExtension.of(context).parchment),
               decoration: InputDecoration(
                 hintText: 'Collection Name',
-                hintStyle: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.charcoal),
+                hintStyle: PromptoreTypography.bodySmall.copyWith(color: PromptoreColorExtension.of(context).charcoal),
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: PromptoreColors.warmGray.withValues(alpha: 0.3)),
+                  borderSide: BorderSide(color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3)),
                 ),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: PromptoreColors.mutedGold),
+                  borderSide: BorderSide(color: PromptoreColorExtension.of(context).mutedGold),
                 ),
               ),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: descController,
-              style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.parchment),
+              style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColorExtension.of(context).parchment),
               decoration: InputDecoration(
                 hintText: 'Description (Optional)',
-                hintStyle: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.charcoal),
+                hintStyle: PromptoreTypography.bodySmall.copyWith(color: PromptoreColorExtension.of(context).charcoal),
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: PromptoreColors.warmGray.withValues(alpha: 0.3)),
+                  borderSide: BorderSide(color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3)),
                 ),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: PromptoreColors.mutedGold),
+                  borderSide: BorderSide(color: PromptoreColorExtension.of(context).mutedGold),
                 ),
               ),
             ),
@@ -81,7 +83,7 @@ class AddToCollectionSheet extends ConsumerWidget {
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               'Cancel',
-              style: PromptoreTypography.metaMedium.copyWith(color: PromptoreColors.dustySepia),
+              style: PromptoreTypography.metaMedium.copyWith(color: PromptoreColorExtension.of(context).dustySepia),
             ),
           ),
           TextButton(
@@ -98,10 +100,10 @@ class AddToCollectionSheet extends ConsumerWidget {
                     content: Text(
                       'Collection "$name" created',
                       style: PromptoreTypography.bodySmall.copyWith(
-                        color: PromptoreColors.parchment,
+                        color: PromptoreColorExtension.of(context).parchment,
                       ),
                     ),
-                    backgroundColor: PromptoreColors.surfaceElevated,
+                    backgroundColor: PromptoreColorExtension.of(context).surfaceElevated,
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -109,7 +111,7 @@ class AddToCollectionSheet extends ConsumerWidget {
             },
             child: Text(
               'Create',
-              style: PromptoreTypography.metaMedium.copyWith(color: PromptoreColors.mutedGold),
+              style: PromptoreTypography.metaMedium.copyWith(color: PromptoreColorExtension.of(context).mutedGold),
             ),
           ),
         ],
@@ -131,7 +133,7 @@ class AddToCollectionSheet extends ConsumerWidget {
             width: Dimensions.sheetHandleWidth,
             height: Dimensions.sheetHandleHeight,
             decoration: BoxDecoration(
-              color: PromptoreColors.warmGray,
+              color: PromptoreColorExtension.of(context).warmGray,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -153,7 +155,7 @@ class AddToCollectionSheet extends ConsumerWidget {
                   icon: Icon(
                     Icons.close,
                     size: 20,
-                    color: PromptoreColors.dustySepia,
+                    color: PromptoreColorExtension.of(context).dustySepia,
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),
@@ -175,7 +177,7 @@ class AddToCollectionSheet extends ConsumerWidget {
                 width: 4,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: col.coverColor ?? PromptoreColors.mutedGold,
+                  color: col.coverColor ?? PromptoreColorExtension.of(context).mutedGold,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -183,8 +185,8 @@ class AddToCollectionSheet extends ConsumerWidget {
                 col.name,
                 style: PromptoreTypography.labelLarge.copyWith(
                   color: isInCollection
-                      ? PromptoreColors.mutedGold
-                      : PromptoreColors.parchment,
+                      ? PromptoreColorExtension.of(context).mutedGold
+                      : PromptoreColorExtension.of(context).parchment,
                 ),
               ),
               subtitle: Text(
@@ -197,8 +199,8 @@ class AddToCollectionSheet extends ConsumerWidget {
                     : Icons.circle_outlined,
                 size: 20,
                 color: isInCollection
-                    ? PromptoreColors.mutedGold
-                    : PromptoreColors.charcoal,
+                    ? PromptoreColorExtension.of(context).mutedGold
+                    : PromptoreColorExtension.of(context).charcoal,
               ),
               onTap: () {
                 HapticFeedback.selectionClick();
@@ -211,10 +213,10 @@ class AddToCollectionSheet extends ConsumerWidget {
                           ? 'Removed from ${col.name}'
                           : 'Saved to ${col.name}',
                       style: PromptoreTypography.bodySmall.copyWith(
-                        color: PromptoreColors.parchment,
+                        color: PromptoreColorExtension.of(context).parchment,
                       ),
                     ),
-                    backgroundColor: PromptoreColors.surfaceElevated,
+                    backgroundColor: PromptoreColorExtension.of(context).surfaceElevated,
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -232,20 +234,20 @@ class AddToCollectionSheet extends ConsumerWidget {
               width: 4,
               height: 28,
               decoration: BoxDecoration(
-                color: PromptoreColors.mutedGold.withValues(alpha: 0.5),
+                color: PromptoreColorExtension.of(context).mutedGold.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
             title: Text(
               'Create New Collection',
               style: PromptoreTypography.labelLarge.copyWith(
-                color: PromptoreColors.mutedGold,
+                color: PromptoreColorExtension.of(context).mutedGold,
               ),
             ),
             trailing: Icon(
               Icons.add_circle_outline,
               size: 20,
-              color: PromptoreColors.mutedGold,
+              color: PromptoreColorExtension.of(context).mutedGold,
             ),
             onTap: () {
               HapticFeedback.lightImpact();

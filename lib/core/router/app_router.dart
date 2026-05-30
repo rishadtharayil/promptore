@@ -25,11 +25,11 @@ class AppRouter {
       GoRoute(
         path: '/onboarding',
         pageBuilder: (context, state) => CustomTransitionPage(
-          child: OnboardingScreen(),
+          child: const OnboardingScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
-          transitionDuration: Duration(milliseconds: 800),
+          transitionDuration: const Duration(milliseconds: 800),
         ),
       ),
 
@@ -44,7 +44,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/feed',
-                pageBuilder: (context, state) => NoTransitionPage(
+                pageBuilder: (context, state) => const NoTransitionPage(
                   child: FeedScreen(),
                 ),
               ),
@@ -55,7 +55,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/explore',
-                pageBuilder: (context, state) => NoTransitionPage(
+                pageBuilder: (context, state) => const NoTransitionPage(
                   child: ExploreScreen(),
                 ),
               ),
@@ -66,7 +66,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/compose',
-                pageBuilder: (context, state) => NoTransitionPage(
+                pageBuilder: (context, state) => const NoTransitionPage(
                   child: ComposeScreen(),
                 ),
               ),
@@ -77,7 +77,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/collections',
-                pageBuilder: (context, state) => NoTransitionPage(
+                pageBuilder: (context, state) => const NoTransitionPage(
                   child: CollectionsScreen(),
                 ),
                 routes: [
@@ -92,7 +92,7 @@ class AppRouter {
                           return FadeTransition(
                               opacity: animation, child: child);
                         },
-                        transitionDuration: Duration(milliseconds: 500),
+                        transitionDuration: const Duration(milliseconds: 500),
                       );
                     },
                   ),
@@ -105,7 +105,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/profile',
-                pageBuilder: (context, state) => NoTransitionPage(
+                pageBuilder: (context, state) => const NoTransitionPage(
                   child: ProfileScreen(),
                 ),
               ),
@@ -126,7 +126,7 @@ class AppRouter {
                 (context, animation, secondaryAnimation, child) {
               return FadeTransition(opacity: animation, child: child);
             },
-            transitionDuration: Duration(milliseconds: 600),
+            transitionDuration: const Duration(milliseconds: 600),
           );
         },
       ),
@@ -136,12 +136,12 @@ class AppRouter {
         parentNavigatorKey: _rootNavigatorKey,
         pageBuilder: (context, state) {
           return CustomTransitionPage(
-            child: SearchScreen(),
+            child: const SearchScreen(),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
               return FadeTransition(opacity: animation, child: child);
             },
-            transitionDuration: Duration(milliseconds: 400),
+            transitionDuration: const Duration(milliseconds: 400),
           );
         },
       ),
@@ -157,7 +157,7 @@ class AppRouter {
                 (context, animation, secondaryAnimation, child) {
               return FadeTransition(opacity: animation, child: child);
             },
-            transitionDuration: Duration(milliseconds: 500),
+            transitionDuration: const Duration(milliseconds: 500),
           );
         },
       ),

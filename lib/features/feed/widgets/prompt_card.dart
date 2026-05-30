@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:promptore/core/theme/colors.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/models/models.dart';
@@ -46,10 +48,10 @@ class PromptCard extends ConsumerWidget {
           vertical: 18,
         ),
         decoration: BoxDecoration(
-          color: PromptoreColors.surface,
+          color: PromptoreColorExtension.of(context).surface,
           borderRadius: BorderRadius.circular(Dimensions.cardRadius),
           border: Border.all(
-            color: PromptoreColors.warmGray.withValues(alpha: 0.4),
+            color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.4),
             width: 0.5,
           ),
         ),
@@ -82,7 +84,7 @@ class PromptCard extends ConsumerWidget {
                 Text(
                   p.size.label,
                   style: PromptoreTypography.metaSmall.copyWith(
-                    color: PromptoreColors.charcoal,
+                    color: PromptoreColorExtension.of(context).charcoal,
                   ),
                 ),
               ],
@@ -124,14 +126,14 @@ class PromptCard extends ConsumerWidget {
                       vertical: 3,
                     ),
                     decoration: BoxDecoration(
-                      color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+                      color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
                       borderRadius:
                           BorderRadius.circular(Dimensions.radiusFull),
                     ),
                     child: Text(
                       tag,
                       style: PromptoreTypography.metaSmall.copyWith(
-                        color: PromptoreColors.dustySepia,
+                        color: PromptoreColorExtension.of(context).dustySepia,
                         fontSize: 9,
                       ),
                     ),
@@ -171,7 +173,7 @@ class PromptCard extends ConsumerWidget {
                 Text(
                   p.authorName,
                   style: PromptoreTypography.bodySmall.copyWith(
-                    color: PromptoreColors.parchment,
+                    color: PromptoreColorExtension.of(context).parchment,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -179,14 +181,14 @@ class PromptCard extends ConsumerWidget {
                 Text(
                   p.authorHandle,
                   style: PromptoreTypography.metaSmall.copyWith(
-                    color: PromptoreColors.charcoal,
+                    color: PromptoreColorExtension.of(context).charcoal,
                   ),
                 ),
                 const SizedBox(width: 4),
                 Text(
                   '· ${_timeAgo(p.createdAt)}',
                   style: PromptoreTypography.metaSmall.copyWith(
-                    color: PromptoreColors.charcoal,
+                    color: PromptoreColorExtension.of(context).charcoal,
                   ),
                 ),
               ],
@@ -197,7 +199,7 @@ class PromptCard extends ConsumerWidget {
             // Thin divider
             Container(
               height: 0.5,
-              color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+              color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
             ),
 
             const SizedBox(height: 10),
@@ -287,16 +289,16 @@ class _ActionButton extends StatelessWidget {
             isActive ? (activeIcon ?? icon) : icon,
             size: 16,
             color: isActive
-                ? PromptoreColors.mutedGold
-                : PromptoreColors.charcoal,
+                ? PromptoreColorExtension.of(context).mutedGold
+                : PromptoreColorExtension.of(context).charcoal,
           ),
           const SizedBox(width: 4),
           Text(
             _formatCount(count),
             style: PromptoreTypography.metaSmall.copyWith(
               color: isActive
-                  ? PromptoreColors.mutedGold
-                  : PromptoreColors.charcoal,
+                  ? PromptoreColorExtension.of(context).mutedGold
+                  : PromptoreColorExtension.of(context).charcoal,
             ),
           ),
         ],
@@ -325,7 +327,7 @@ class _ImpactBar extends StatelessWidget {
           'impact',
           style: PromptoreTypography.metaSmall.copyWith(
             fontSize: 7,
-            color: PromptoreColors.charcoal,
+            color: PromptoreColorExtension.of(context).charcoal,
             letterSpacing: 1.0,
           ),
         ),
@@ -334,7 +336,7 @@ class _ImpactBar extends StatelessWidget {
           width: Dimensions.impactBarWidth,
           height: Dimensions.impactBarHeight,
           decoration: BoxDecoration(
-            color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+            color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(2),
           ),
           child: Align(
@@ -345,8 +347,8 @@ class _ImpactBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      PromptoreColors.fadedBronze.withValues(alpha: 0.6),
-                      PromptoreColors.mutedGold,
+                      PromptoreColorExtension.of(context).fadedBronze.withValues(alpha: 0.6),
+                      PromptoreColorExtension.of(context).mutedGold,
                     ],
                   ),
                   borderRadius: BorderRadius.circular(2),

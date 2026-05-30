@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:promptore/core/theme/color_extension.dart';
 import '../theme/colors.dart';
 
 /// Ambient glow container — wraps content with a soft radial gradient.
@@ -27,7 +28,7 @@ class GlowContainer extends StatelessWidget {
           center: glowAlignment,
           radius: glowRadius,
           colors: [
-            (glowColor ?? PromptoreColors.mutedGold).withValues(alpha: glowOpacity),
+            (glowColor ?? PromptoreColorExtension.of(context).mutedGold).withValues(alpha: glowOpacity),
             Colors.transparent,
           ],
         ),
