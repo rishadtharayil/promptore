@@ -248,14 +248,12 @@ class PromptCard extends ConsumerWidget {
           .animate()
           .fadeIn(
             duration: 500.ms,
-            delay: Duration(milliseconds: 80 * index),
             curve: Curves.easeOut,
           )
           .slideY(
             begin: 0.04,
             end: 0,
             duration: 500.ms,
-            delay: Duration(milliseconds: 80 * index),
             curve: Curves.easeOut,
           ),
     );

@@ -184,6 +184,185 @@ class ExploreScreen extends ConsumerWidget {
                                     '${p.echoCount}',
                                     style: PromptoreTypography.metaSmall,
                                   ),
+import 'package:promptore/core/theme/color_extension.dart';
+import 'package:promptore/core/theme/typography.dart';
+import 'package:promptore/core/theme/dimensions.dart';
+import 'package:promptore/core/models/models.dart';
+import 'package:promptore/core/providers/prompts_provider.dart';
+import 'package:promptore/core/providers/collections_provider.dart';
+import 'package:promptore/core/providers/users_provider.dart';
+import 'package:promptore/core/widgets/grain_overlay.dart';
+
+/// Explore screen — discover categories, trending prompts, rising creators.
+class ExploreScreen extends ConsumerWidget {
+  const ExploreScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final prompts = ref.watch(promptsProvider);
+    final collections = ref.watch(collectionsProvider);
+    final users = ref.watch(usersProvider);
+
+    // Top 5 prompts by echo count
+    final trending = List<Prompt>.from(prompts)
+      ..sort((a, b) => b.echoCount.compareTo(a.echoCount));
+    final topPrompts = trending.take(5).toList();
+
+    return GrainOverlay(
+      child: Scaffold(
+        backgroundColor: PromptoreColorExtension.of(context).background,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.only(bottom: 100),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
+
+                // Header
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Dimensions.pagePaddingH,
+                  ),
+                  child: Text(
+                    'Explore',
+                    style: PromptoreTypography.displaySmall,
+                  ),
+                ).animate().fadeIn(duration: 500.ms),
+
+                const SizedBox(height: 16),
+
+                // Search bar (tappable, navigates to /search)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Dimensions.pagePaddingH,
+                  ),
+                  child: GestureDetector(
+                    onTap: () => context.push('/search'),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                      decoration: BoxDecoration(
+                        color: PromptoreColorExtension.of(context).surface,
+                        borderRadius: BorderRadius.circular(Dimensions.radiusMd),
+                        border: Border.all(
+                          color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.4),
+                          width: 0.5,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.search_rounded,
+                            size: 18,
+                            color: PromptoreColorExtension.of(context).charcoal,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Search the archive...',
+                            style: PromptoreTypography.bodyMedium.copyWith(
+                              color: PromptoreColorExtension.of(context).charcoal,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ).animate().fadeIn(duration: 400.ms, delay: 100.ms),
+
+                const SizedBox(height: 28),
+
+                // Trending section
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Dimensions.pagePaddingH,
+                  ),
+                  child: Text(
+                    'TRENDING',
+                    style: PromptoreTypography.metaLarge.copyWith(
+                      letterSpacing: 2.0,
+                      color: PromptoreColorExtension.of(context).dustySepia,
+                    ),
+                  ),
+                ).animate().fadeIn(duration: 400.ms, delay: 150.ms),
+
+                const SizedBox(height: 12),
+
+                // Trending cards
+                SizedBox(
+                  height: 110,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Dimensions.pagePaddingH,
+                    ),
+                    itemCount: topPrompts.length,
+                    itemBuilder: (context, index) {
+                      final p = topPrompts[index];
+                      return GestureDetector(
+                        onTap: () => context.push('/prompt/${p.id}'),
+                        child: Container(
+                          width: 200,
+                          margin: const EdgeInsets.only(right: 12),
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: PromptoreColorExtension.of(context).surface,
+                            borderRadius:
+                                BorderRadius.circular(Dimensions.radiusMd),
+                            border: Border.all(
+                              color: PromptoreColorExtension.of(context).warmGray
+                                  .withValues(alpha: 0.3),
+                              width: 0.5,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 6,
+                                    height: 6,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: p.category.color,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    p.category.label.split(' ').first,
+                                    style: PromptoreTypography.metaSmall
+                                        .copyWith(color: p.category.color),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Expanded(
+                                child: Text(
+                                  p.title,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: PromptoreTypography.titleSmall.copyWith(
+                                    color: PromptoreColorExtension.of(context).parchment,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.graphic_eq_rounded,
+                                    size: 12,
+                                    color: PromptoreColorExtension.of(context).charcoal,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${p.echoCount}',
+                                    style: PromptoreTypography.metaSmall,
+                                  ),
                                 ],
                               ),
                             ],
@@ -193,13 +372,11 @@ class ExploreScreen extends ConsumerWidget {
                           .animate()
                           .fadeIn(
                             duration: 400.ms,
-                            delay: Duration(milliseconds: 200 + index * 80),
                           )
                           .slideX(
                             begin: 0.05,
                             end: 0,
                             duration: 400.ms,
-                            delay: Duration(milliseconds: 200 + index * 80),
                           );
                     },
                   ),
@@ -329,13 +506,11 @@ class ExploreScreen extends ConsumerWidget {
                           .animate()
                           .fadeIn(
                             duration: 400.ms,
-                            delay: Duration(milliseconds: 450 + index * 60),
                           )
                           .scale(
                             begin: const Offset(0.9, 0.9),
                             end: const Offset(1, 1),
                             duration: 400.ms,
-                            delay: Duration(milliseconds: 450 + index * 60),
                           );
                     },
                   ),
@@ -418,15 +593,11 @@ class ExploreScreen extends ConsumerWidget {
                             .animate()
                             .fadeIn(
                               duration: 400.ms,
-                              delay:
-                                  Duration(milliseconds: 550 + index * 80),
                             )
                             .slideX(
                               begin: 0.05,
                               end: 0,
                               duration: 400.ms,
-                              delay:
-                                  Duration(milliseconds: 550 + index * 80),
                             ),
                       );
                     },
@@ -511,13 +682,11 @@ class _CategoryTile extends StatelessWidget {
         .animate()
         .fadeIn(
           duration: 400.ms,
-          delay: Duration(milliseconds: 350 + index * 50),
         )
         .scale(
           begin: const Offset(0.95, 0.95),
           end: const Offset(1, 1),
           duration: 400.ms,
-          delay: Duration(milliseconds: 350 + index * 50),
         );
   }
 }

@@ -380,13 +380,11 @@ class _CollectionCard extends StatelessWidget {
         .animate()
         .fadeIn(
           duration: 400.ms,
-          delay: Duration(milliseconds: 100 + index * 80),
         )
         .scale(
           begin: const Offset(0.95, 0.95),
           end: const Offset(1, 1),
           duration: 400.ms,
-          delay: Duration(milliseconds: 100 + index * 80),
         );
   }
 }
