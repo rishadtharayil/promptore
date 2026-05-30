@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 
 /// Film grain overlay — adds subtle texture to backgrounds.

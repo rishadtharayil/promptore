@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../core/theme/colors.dart';
 import '../core/theme/typography.dart';
 import '../core/theme/dimensions.dart';
-import '../core/theme/promptore_theme.dart';
 
 /// Main shell with atmospheric bottom navigation.
 /// Five tabs: Feed, Explore, Compose, Collections, Profile.

@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/promptore_theme.dart';
 import 'core/router/app_router.dart';
 
-import 'core/theme/colors.dart';
 import 'core/providers/theme_provider.dart';
 
 void main() {

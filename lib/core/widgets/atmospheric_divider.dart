@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:promptore/core/theme/color_extension.dart';
-import '../theme/colors.dart';
 
 /// Atmospheric divider — faded gradient line instead of harsh borders.
 /// Creates visual breathing room between content sections.

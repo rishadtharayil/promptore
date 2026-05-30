@@ -6,8 +6,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:promptore/core/theme/colors.dart';
-import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/models/models.dart';
@@ -250,13 +248,17 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
                               ? TypewriterText(
                                   key: ValueKey('tw_${prompt.id}'),
                                   text: prompt.title,
-                                  style: PromptoreTypography.readerTitle,
+                                  style: PromptoreTypography.readerTitle.copyWith(
+                                    color: PromptoreColorExtension.of(context).parchment,
+                                  ),
                                   animate: true,
                                   charDuration: const Duration(milliseconds: 50),
                                 )
                               : Text(
                                   prompt.title,
-                                  style: PromptoreTypography.readerTitle,
+                                  style: PromptoreTypography.readerTitle.copyWith(
+                                    color: PromptoreColorExtension.of(context).parchment,
+                                  ),
                                 ),
                         ).animate().fadeIn(duration: 600.ms, delay: 100.ms),
 
@@ -691,7 +693,9 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
         padding: const EdgeInsets.only(bottom: 16),
         child: RichText(
           text: TextSpan(
-            style: PromptoreTypography.readerBody,
+            style: PromptoreTypography.readerBody.copyWith(
+              color: PromptoreColorExtension.of(context).parchment,
+            ),
             children: _parseContent(text),
           ),
         ),

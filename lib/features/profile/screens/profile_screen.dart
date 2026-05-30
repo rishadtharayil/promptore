@@ -4,8 +4,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:promptore/core/theme/colors.dart';
-import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/data/mock_data.dart';

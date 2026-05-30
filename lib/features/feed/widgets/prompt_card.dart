@@ -97,7 +97,9 @@ class PromptCard extends ConsumerWidget {
               p.title,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: PromptoreTypography.titleLarge,
+              style: PromptoreTypography.titleLarge.copyWith(
+                color: PromptoreColorExtension.of(context).parchment,
+              ),
             ),
 
             const SizedBox(height: 8),
@@ -109,6 +111,7 @@ class PromptCard extends ConsumerWidget {
               overflow: TextOverflow.ellipsis,
               style: PromptoreTypography.bodyMedium.copyWith(
                 height: 1.55,
+                color: PromptoreColorExtension.of(context).dustySepia,
               ),
             ),
 

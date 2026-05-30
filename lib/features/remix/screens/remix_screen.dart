@@ -7,8 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:promptore/core/theme/colors.dart';
-import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/data/mock_data.dart';

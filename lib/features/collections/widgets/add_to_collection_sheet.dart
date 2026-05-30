@@ -3,8 +3,6 @@ import 'package:promptore/core/theme/color_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:promptore/core/theme/colors.dart';
-import 'package:promptore/core/theme/color_extension.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/providers/collections_provider.dart';
