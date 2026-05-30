@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/colors.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
-import 'package:promptore/core/data/mock_data.dart';
 import 'package:promptore/core/models/models.dart';
+import 'package:promptore/core/providers/prompts_provider.dart';
 import 'package:promptore/core/widgets/grain_overlay.dart';
 
 /// Search screen — searching through whispered memories.
-class SearchScreen extends StatefulWidget {
-  SearchScreen({super.key});
+class SearchScreen extends ConsumerStatefulWidget {
+  const SearchScreen({super.key});
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
+  ConsumerState<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
   String _query = '';
@@ -43,10 +44,10 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  List<Prompt> get _results {
+  List<Prompt> _getResults(List<Prompt> prompts) {
     if (_query.isEmpty) return [];
     final q = _query.toLowerCase();
-    return MockData.prompts.where((p) {
+    return prompts.where((p) {
       return p.title.toLowerCase().contains(q) ||
           p.tags.any((t) => t.toLowerCase().contains(q)) ||
           p.excerpt.toLowerCase().contains(q);
@@ -55,6 +56,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final prompts = ref.watch(promptsProvider);
+    final results = _getResults(prompts);
+
     return GrainOverlay(
       child: Scaffold(
         backgroundColor: PromptoreColors.background,
@@ -62,18 +66,18 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
 
               // Search bar + close button
               Padding(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: Dimensions.pagePaddingH,
                 ),
                 child: Row(
                   children: [
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
                           color: PromptoreColors.surface,
                           borderRadius:
@@ -106,7 +110,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     GestureDetector(
                       onTap: () => context.pop(),
                       child: Icon(
@@ -119,15 +123,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ).animate().fadeIn(duration: 300.ms),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // Content
               Expanded(
                 child: _query.isEmpty
                     ? _buildSuggestions()
-                    : _results.isEmpty
+                    : results.isEmpty
                         ? _buildEmpty()
-                        : _buildResults(),
+                        : _buildResults(results),
               ),
             ],
           ),
@@ -138,7 +142,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildSuggestions() {
     return Padding(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: Dimensions.pagePaddingH,
       ),
       child: Column(
@@ -152,7 +156,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ).animate().fadeIn(duration: 400.ms, delay: 100.ms),
 
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
 
           Wrap(
             spacing: 8,
@@ -164,7 +168,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   setState(() => _query = entry.value);
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 14,
                     vertical: 8,
                   ),
@@ -191,8 +195,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     delay: Duration(milliseconds: 150 + entry.key * 50),
                   )
                   .scale(
-                    begin: Offset(0.9, 0.9),
-                    end: Offset(1, 1),
+                    begin: const Offset(0.9, 0.9),
+                    end: const Offset(1, 1),
                     duration: 300.ms,
                     delay: Duration(milliseconds: 150 + entry.key * 50),
                   );
@@ -213,7 +217,7 @@ class _SearchScreenState extends State<SearchScreen> {
             size: 40,
             color: PromptoreColors.charcoal,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             'No echoes found in the archive',
             style: PromptoreTypography.accent.copyWith(
@@ -226,19 +230,19 @@ class _SearchScreenState extends State<SearchScreen> {
     ).animate().fadeIn(duration: 400.ms);
   }
 
-  Widget _buildResults() {
+  Widget _buildResults(List<Prompt> results) {
     return ListView.builder(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: Dimensions.pagePaddingH,
       ),
-      itemCount: _results.length,
+      itemCount: results.length,
       itemBuilder: (context, index) {
-        final p = _results[index];
+        final p = results[index];
         return GestureDetector(
           onTap: () => context.push('/prompt/${p.id}'),
           child: Container(
-            margin: EdgeInsets.only(bottom: 8),
-            padding: EdgeInsets.symmetric(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 14,
             ),
@@ -260,7 +264,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     color: p.category.color,
                   ),
                 ),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,7 +277,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           fontSize: 13,
                         ),
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       Text(
                         '${p.authorName} · ${p.category.label}',
                         style: PromptoreTypography.metaSmall,

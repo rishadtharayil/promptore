@@ -1,35 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/colors.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/models/models.dart';
-import 'package:promptore/core/data/mock_data.dart';
+import 'package:promptore/core/providers/prompts_provider.dart';
 import 'package:promptore/core/widgets/grain_overlay.dart';
 import '../widgets/prompt_card.dart';
 
 /// The main social feed — scrolling through archived transmissions.
-class FeedScreen extends StatefulWidget {
-  FeedScreen({super.key});
+class FeedScreen extends ConsumerStatefulWidget {
+  const FeedScreen({super.key});
 
   @override
-  State<FeedScreen> createState() => _FeedScreenState();
+  ConsumerState<FeedScreen> createState() => _FeedScreenState();
 }
 
-class _FeedScreenState extends State<FeedScreen> {
+class _FeedScreenState extends ConsumerState<FeedScreen> {
   PromptCategory? _selectedCategory;
 
-  List<Prompt> get _filteredPrompts {
-    if (_selectedCategory == null) return MockData.prompts;
-    return MockData.prompts
+  List<Prompt> _getFilteredPrompts(List<Prompt> prompts) {
+    if (_selectedCategory == null) return prompts;
+    return prompts
         .where((p) => p.category == _selectedCategory)
         .toList();
   }
 
   @override
   Widget build(BuildContext context) {
+    final allPrompts = ref.watch(promptsProvider);
+    final filteredPrompts = _getFilteredPrompts(allPrompts);
+
     return GrainOverlay(
       child: Scaffold(
         backgroundColor: PromptoreColors.background,
@@ -89,14 +93,13 @@ class _FeedScreenState extends State<FeedScreen> {
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      final prompts = _filteredPrompts;
-                      if (index >= prompts.length) return null;
+                      if (index >= filteredPrompts.length) return null;
                       return PromptCard(
-                        prompt: prompts[index],
+                        prompt: filteredPrompts[index],
                         index: index,
                       );
                     },
-                    childCount: _filteredPrompts.length,
+                    childCount: filteredPrompts.length,
                   ),
                 ),
               ),
@@ -113,7 +116,7 @@ class _CategoryChipBar extends StatelessWidget {
   final PromptCategory? selected;
   final ValueChanged<PromptCategory?> onSelected;
 
-  _CategoryChipBar({
+  const _CategoryChipBar({
     required this.selected,
     required this.onSelected,
   });
@@ -166,7 +169,7 @@ class _Chip extends StatelessWidget {
   final Color color;
   final VoidCallback onTap;
 
-  _Chip({
+  const _Chip({
     required this.label,
     required this.symbol,
     required this.isSelected,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/colors.dart';
@@ -8,15 +9,108 @@ import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/data/mock_data.dart';
 import 'package:promptore/core/models/models.dart';
+import 'package:promptore/core/providers/collections_provider.dart';
 import 'package:promptore/core/widgets/grain_overlay.dart';
 
 /// User's collections — curated libraries of thought.
-class CollectionsScreen extends StatelessWidget {
-  CollectionsScreen({super.key});
+class CollectionsScreen extends ConsumerWidget {
+  const CollectionsScreen({super.key});
+
+  void _showCreateCollectionDialog(BuildContext context, WidgetRef ref) {
+    final nameController = TextEditingController();
+    final descController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PromptoreColors.surfaceElevated,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Dimensions.radiusMd),
+        ),
+        title: Text(
+          'Create Collection',
+          style: PromptoreTypography.titleMedium,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              autofocus: true,
+              style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.parchment),
+              decoration: InputDecoration(
+                hintText: 'Collection Name',
+                hintStyle: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.charcoal),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: PromptoreColors.warmGray.withValues(alpha: 0.3)),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: PromptoreColors.mutedGold),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: descController,
+              style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.parchment),
+              decoration: InputDecoration(
+                hintText: 'Description (Optional)',
+                hintStyle: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.charcoal),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: PromptoreColors.warmGray.withValues(alpha: 0.3)),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: PromptoreColors.mutedGold),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              'Cancel',
+              style: PromptoreTypography.metaMedium.copyWith(color: PromptoreColors.dustySepia),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              final name = nameController.text.trim();
+              if (name.isNotEmpty) {
+                ref.read(collectionsProvider.notifier).createCollection(
+                  name,
+                  descController.text.trim().isEmpty ? null : descController.text.trim(),
+                );
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Collection "$name" created',
+                      style: PromptoreTypography.bodySmall.copyWith(
+                        color: PromptoreColors.parchment,
+                      ),
+                    ),
+                    backgroundColor: PromptoreColors.surfaceElevated,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            },
+            child: Text(
+              'Create',
+              style: PromptoreTypography.metaMedium.copyWith(color: PromptoreColors.mutedGold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
-  Widget build(BuildContext context) {
-    final collections = MockData.collections
+  Widget build(BuildContext context, WidgetRef ref) {
+    final allCollections = ref.watch(collectionsProvider);
+    final collections = allCollections
         .where((c) => c.ownerId == MockData.currentUser.id)
         .toList();
 
@@ -25,16 +119,16 @@ class CollectionsScreen extends StatelessWidget {
         backgroundColor: PromptoreColors.background,
         body: SafeArea(
           child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            padding: EdgeInsets.only(bottom: 100),
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.only(bottom: 100),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 // Header
                 Padding(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: Dimensions.pagePaddingH,
                   ),
                   child: Row(
@@ -47,7 +141,7 @@ class CollectionsScreen extends StatelessWidget {
                             'Your Archive',
                             style: PromptoreTypography.displaySmall,
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
                             'Curated libraries of thought',
                             style: PromptoreTypography.bodyMedium,
@@ -58,21 +152,10 @@ class CollectionsScreen extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           HapticFeedback.lightImpact();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'New collection created',
-                                style: PromptoreTypography.bodySmall.copyWith(
-                                  color: PromptoreColors.parchment,
-                                ),
-                              ),
-                              backgroundColor: PromptoreColors.surfaceElevated,
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
+                          _showCreateCollectionDialog(context, ref);
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             horizontal: 14,
                             vertical: 8,
                           ),
@@ -93,7 +176,7 @@ class CollectionsScreen extends StatelessWidget {
                                 size: 14,
                                 color: PromptoreColors.mutedGold,
                               ),
-                              SizedBox(width: 4),
+                              const SizedBox(width: 4),
                               Text(
                                 'Create',
                                 style: PromptoreTypography.metaMedium.copyWith(
@@ -108,12 +191,12 @@ class CollectionsScreen extends StatelessWidget {
                   ),
                 ).animate().fadeIn(duration: 500.ms),
 
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
 
                 if (collections.isEmpty)
                   // Empty state
                   Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: Dimensions.pagePaddingH,
                       vertical: 60,
                     ),
@@ -125,14 +208,14 @@ class CollectionsScreen extends StatelessWidget {
                             size: 48,
                             color: PromptoreColors.charcoal,
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           Text(
                             'Your archive is empty',
                             style: PromptoreTypography.titleMedium.copyWith(
                               color: PromptoreColors.dustySepia,
                             ),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text(
                             'Save prompts to begin collecting.',
                             style: PromptoreTypography.bodySmall,
@@ -144,14 +227,14 @@ class CollectionsScreen extends StatelessWidget {
                 else
                   // Collections grid
                   Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: Dimensions.pagePaddingH,
                     ),
                     child: GridView.builder(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       gridDelegate:
-                          SliverGridDelegateWithFixedCrossAxisCount(
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.85,
                         crossAxisSpacing: 12,
@@ -169,10 +252,10 @@ class CollectionsScreen extends StatelessWidget {
                   ),
 
                 // Also show all collections for discovery
-                if (collections.isNotEmpty) ...[
-                  SizedBox(height: 32),
+                if (allCollections.isNotEmpty) ...[
+                  const SizedBox(height: 32),
                   Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: Dimensions.pagePaddingH,
                     ),
                     child: Text(
@@ -183,24 +266,24 @@ class CollectionsScreen extends StatelessWidget {
                       ),
                     ),
                   ).animate().fadeIn(duration: 400.ms, delay: 400.ms),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: Dimensions.pagePaddingH,
                     ),
                     child: GridView.builder(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       gridDelegate:
-                          SliverGridDelegateWithFixedCrossAxisCount(
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.85,
                         crossAxisSpacing: 12,
                         mainAxisSpacing: 12,
                       ),
-                      itemCount: MockData.collections.length,
+                      itemCount: allCollections.length,
                       itemBuilder: (context, index) {
-                        final col = MockData.collections[index];
+                        final col = allCollections[index];
                         return _CollectionCard(
                           collection: col,
                           index: index + collections.length,
@@ -223,7 +306,7 @@ class _CollectionCard extends StatelessWidget {
   final PromptCollection collection;
   final int index;
 
-  _CollectionCard({required this.collection, required this.index});
+  const _CollectionCard({required this.collection, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +315,7 @@ class _CollectionCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => context.push('/collections/${collection.id}'),
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: PromptoreColors.surface,
           borderRadius: BorderRadius.circular(Dimensions.cardRadius),
@@ -253,7 +336,7 @@ class _CollectionCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            SizedBox(height: 14),
+            const SizedBox(height: 14),
 
             // Name
             Text(
@@ -264,7 +347,7 @@ class _CollectionCard extends StatelessWidget {
                 fontSize: 15,
               ),
             ),
-            SizedBox(height: 6),
+            const SizedBox(height: 6),
 
             // Description
             if (collection.description != null)
@@ -279,7 +362,7 @@ class _CollectionCard extends StatelessWidget {
                 ),
               ),
 
-            Spacer(),
+            const Spacer(),
 
             // Count
             Text(
@@ -298,8 +381,8 @@ class _CollectionCard extends StatelessWidget {
           delay: Duration(milliseconds: 100 + index * 80),
         )
         .scale(
-          begin: Offset(0.95, 0.95),
-          end: Offset(1, 1),
+          begin: const Offset(0.95, 0.95),
+          end: const Offset(1, 1),
           duration: 400.ms,
           delay: Duration(milliseconds: 100 + index * 80),
         );
