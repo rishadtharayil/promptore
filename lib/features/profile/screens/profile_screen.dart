@@ -11,7 +11,6 @@ import 'package:promptore/core/models/models.dart';
 import 'package:promptore/core/providers/prompts_provider.dart';
 import 'package:promptore/core/providers/collections_provider.dart';
 import 'package:promptore/core/providers/theme_provider.dart';
-import 'package:promptore/core/widgets/grain_overlay.dart';
 import 'package:promptore/core/widgets/atmospheric_divider.dart';
 
 /// Profile — personal archive and creative identity.
@@ -46,8 +45,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     // Dynamically calculate stats
     final totalEchoesReceived = authored.fold<int>(0, (sum, p) => sum + p.echoCount);
 
-    return GrainOverlay(
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: PromptoreColorExtension.of(context).background,
         body: SafeArea(
           child: SingleChildScrollView(
@@ -266,7 +264,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           .animate()
                           .fadeIn(
                             duration: 400.ms,
-                            delay: Duration(milliseconds: entry.key * 80),
+                            delay: Duration(milliseconds: entry.key.clamp(0, 8) * 80),
                           );
                     })
                   else
@@ -282,8 +280,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -439,7 +436,7 @@ class _CompactPromptTile extends StatelessWidget {
         .animate()
         .fadeIn(
           duration: 400.ms,
-          delay: Duration(milliseconds: index * 80),
+          delay: Duration(milliseconds: index.clamp(0, 8) * 80),
         );
   }
 }

@@ -8,7 +8,6 @@ import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/providers/collections_provider.dart';
 import 'package:promptore/core/providers/prompts_provider.dart';
-import 'package:promptore/core/widgets/grain_overlay.dart';
 import 'package:promptore/core/widgets/atmospheric_divider.dart';
 import 'package:promptore/features/feed/widgets/prompt_card.dart';
 
@@ -33,116 +32,151 @@ class CollectionDetailScreen extends ConsumerWidget {
         
     final accentColor = collection.coverColor ?? PromptoreColorExtension.of(context).mutedGold;
 
-    return GrainOverlay(
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: PromptoreColorExtension.of(context).background,
+      appBar: AppBar(
         backgroundColor: PromptoreColorExtension.of(context).background,
-        appBar: AppBar(
-          backgroundColor: PromptoreColorExtension.of(context).background,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_rounded,
-              size: 20,
-              color: PromptoreColorExtension.of(context).dustySepia,
-            ),
-            onPressed: () => context.pop(),
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_rounded,
+            size: 20,
+            color: PromptoreColorExtension.of(context).dustySepia,
           ),
+          onPressed: () => context.pop(),
         ),
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.only(bottom: 100),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: Dimensions.pagePaddingH,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Accent bar
-                    Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: accentColor,
-                        borderRadius: BorderRadius.circular(2),
+      ),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.only(bottom: 100),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Dimensions.pagePaddingH,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Collection Info Card
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: PromptoreColorExtension.of(context).surface,
+                      borderRadius: BorderRadius.circular(Dimensions.cardRadius),
+                      border: Border.all(
+                        color: PromptoreColorExtension.of(context).warmGray.withValues(alpha: 0.3),
+                        width: 0.5,
                       ),
-                    ).animate().fadeIn(duration: 400.ms).scaleX(
-                          begin: 0,
-                          end: 1,
-                          alignment: Alignment.centerLeft,
-                          duration: 600.ms,
-                        ),
-
-                    const SizedBox(height: 16),
-
-                    // Collection name
-                    Text(
-                      collection.name,
-                      style: PromptoreTypography.displaySmall,
-                    ).animate().fadeIn(duration: 500.ms, delay: 100.ms),
-
-                    const SizedBox(height: 8),
-
-                    if (collection.description != null)
-                      Text(
-                        collection.description!,
-                        style: PromptoreTypography.bodyMedium.copyWith(
-                          height: 1.6,
-                        ),
-                      ).animate().fadeIn(duration: 400.ms, delay: 200.ms),
-
-                    const SizedBox(height: 12),
-
-                    // Metadata
-                    Row(
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '${collection.promptCount} prompts',
-                          style: PromptoreTypography.metaMedium.copyWith(
+                        Container(
+                          width: 48,
+                          height: 4,
+                          decoration: BoxDecoration(
                             color: accentColor,
+                            borderRadius: BorderRadius.circular(2),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(height: 20),
                         Text(
-                          'Created ${collection.createdAt.year}',
-                          style: PromptoreTypography.metaMedium,
+                          collection.name,
+                          style: PromptoreTypography.displaySmall.copyWith(
+                            fontSize: 24,
+                          ),
+                        ),
+                        if (collection.description != null) ...[
+                          const SizedBox(height: 12),
+                          Text(
+                            collection.description!,
+                            style: PromptoreTypography.bodyMedium.copyWith(
+                              color: PromptoreColorExtension.of(context).dustySepia,
+                              height: 1.5,
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 20),
+                        const AtmosphericDivider(),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '${prompts.length} ARCHIVAL ENTRIES',
+                              style: PromptoreTypography.metaSmall.copyWith(
+                                color: accentColor,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                            Text(
+                              collection.isPublic ? 'PUBLIC RECORD' : 'RESTRICTED',
+                              style: PromptoreTypography.metaSmall.copyWith(
+                                color: PromptoreColorExtension.of(context).charcoal,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
-                    ).animate().fadeIn(duration: 400.ms, delay: 250.ms),
+                    ),
+                  ).animate().fadeIn(duration: 500.ms, delay: 100.ms),
 
-                    const SizedBox(height: 20),
-                    const AtmosphericDivider(),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
+                  const SizedBox(height: 28),
 
-              // Prompts
-              ...prompts.asMap().entries.map((entry) {
-                return PromptCard(
-                  prompt: entry.value,
-                  index: entry.key,
-                );
-              }),
-
-              if (prompts.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.all(40),
-                  child: Center(
-                    child: Text(
-                      'This collection is empty',
-                      style: PromptoreTypography.bodyMedium.copyWith(
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.auto_stories_outlined,
+                        size: 14,
                         color: PromptoreColorExtension.of(context).charcoal,
                       ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'SAVED TRANSMISSIONS',
+                        style: PromptoreTypography.metaSmall.copyWith(
+                          color: PromptoreColorExtension.of(context).charcoal,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ],
+                  ).animate().fadeIn(duration: 400.ms, delay: 200.ms),
+
+                  const SizedBox(height: 16),
+                  const AtmosphericDivider()
+                      .animate()
+                      .fadeIn(duration: 400.ms, delay: 250.ms),
+
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
+
+            // Prompts
+            ...prompts.asMap().entries.map((entry) {
+              return PromptCard(
+                prompt: entry.value,
+                index: entry.key,
+              );
+            }),
+
+            if (prompts.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(40),
+                child: Center(
+                  child: Text(
+                    'This collection is empty',
+                    style: PromptoreTypography.bodyMedium.copyWith(
+                      color: PromptoreColorExtension.of(context).charcoal,
                     ),
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );

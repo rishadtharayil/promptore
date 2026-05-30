@@ -12,7 +12,6 @@ import 'package:promptore/core/models/models.dart';
 import 'package:promptore/core/providers/prompts_provider.dart';
 import 'package:promptore/core/providers/annotations_provider.dart';
 import 'package:promptore/core/providers/users_provider.dart';
-import 'package:promptore/core/widgets/grain_overlay.dart';
 import 'package:promptore/core/widgets/glow_container.dart';
 import 'package:promptore/core/widgets/atmospheric_divider.dart';
 import '../widgets/typewriter_text.dart';
@@ -149,8 +148,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
     );
     final isTunedIn = author.isTunedIn;
 
-    return GrainOverlay(
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: PromptoreColorExtension.of(context).background,
         body: Stack(
           children: [
@@ -678,8 +676,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   /// Build content paragraphs with simple markdown parsing
@@ -701,7 +698,7 @@ class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
         ),
       ).animate().fadeIn(
             duration: 500.ms,
-            delay: Duration(milliseconds: 400 + (entry.key * 100)),
+            delay: Duration(milliseconds: 400 + (entry.key.clamp(0, 8) * 100)),
           );
     }).toList();
   }

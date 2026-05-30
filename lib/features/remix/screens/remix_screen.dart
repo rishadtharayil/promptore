@@ -12,7 +12,6 @@ import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/data/mock_data.dart';
 import 'package:promptore/core/models/models.dart';
 import 'package:promptore/core/providers/prompts_provider.dart';
-import 'package:promptore/core/widgets/grain_overlay.dart';
 import 'package:promptore/core/widgets/atmospheric_divider.dart';
 
 /// Remix screen — fork a prompt and make it your own.
@@ -130,8 +129,7 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GrainOverlay(
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: PromptoreColorExtension.of(context).background,
         appBar: AppBar(
           backgroundColor: PromptoreColorExtension.of(context).background,
@@ -456,7 +454,6 @@ class _RemixScreenState extends ConsumerState<RemixScreen> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }

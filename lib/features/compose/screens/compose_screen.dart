@@ -11,7 +11,6 @@ import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/models/models.dart';
 import 'package:promptore/core/data/mock_data.dart';
 import 'package:promptore/core/providers/prompts_provider.dart';
-import 'package:promptore/core/widgets/grain_overlay.dart';
 import 'package:promptore/core/widgets/atmospheric_divider.dart';
 
 /// Compose screen — write something that outlasts you.
@@ -125,8 +124,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GrainOverlay(
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: PromptoreColorExtension.of(context).background,
         body: SafeArea(
           child: SingleChildScrollView(
@@ -391,7 +389,6 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }

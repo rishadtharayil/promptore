@@ -8,8 +8,6 @@ import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/models/models.dart';
 import 'package:promptore/core/providers/prompts_provider.dart';
-import 'package:promptore/core/widgets/grain_overlay.dart';
-
 /// Search screen — searching through whispered memories.
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -59,8 +57,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final prompts = ref.watch(promptsProvider);
     final results = _getResults(prompts);
 
-    return GrainOverlay(
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: PromptoreColorExtension.of(context).background,
         body: SafeArea(
           child: Column(
@@ -136,8 +133,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildSuggestions() {

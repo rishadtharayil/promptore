@@ -8,7 +8,6 @@ import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/models/models.dart';
 import 'package:promptore/core/providers/prompts_provider.dart';
-import 'package:promptore/core/widgets/grain_overlay.dart';
 import '../widgets/prompt_card.dart';
 
 /// The main social feed — scrolling through archived transmissions.
@@ -34,8 +33,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     final allPrompts = ref.watch(promptsProvider);
     final filteredPrompts = _getFilteredPrompts(allPrompts);
 
-    return GrainOverlay(
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: PromptoreColorExtension.of(context).background,
         body: RefreshIndicator(
           color: PromptoreColorExtension.of(context).mutedGold,
@@ -106,8 +104,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }
 

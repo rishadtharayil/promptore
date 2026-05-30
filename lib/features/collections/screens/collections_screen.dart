@@ -10,8 +10,6 @@ import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/data/mock_data.dart';
 import 'package:promptore/core/models/models.dart';
 import 'package:promptore/core/providers/collections_provider.dart';
-import 'package:promptore/core/widgets/grain_overlay.dart';
-
 /// User's collections — curated libraries of thought.
 class CollectionsScreen extends ConsumerWidget {
   const CollectionsScreen({super.key});
@@ -114,8 +112,7 @@ class CollectionsScreen extends ConsumerWidget {
         .where((c) => c.ownerId == MockData.currentUser.id)
         .toList();
 
-    return GrainOverlay(
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: PromptoreColorExtension.of(context).background,
         body: SafeArea(
           child: SingleChildScrollView(
@@ -296,8 +293,7 @@ class CollectionsScreen extends ConsumerWidget {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
 

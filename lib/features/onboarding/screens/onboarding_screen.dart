@@ -5,8 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
-import 'package:promptore/core/widgets/grain_overlay.dart';
-
 /// PROMPTORE Onboarding — a 3-screen atmospheric intro.
 /// Like entering a dark library at midnight: slow fades,
 /// floating text, gold radial glows, and cinematic pacing.
@@ -35,8 +33,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: PromptoreColorExtension.of(context).background,
-      body: GrainOverlay(
-        child: Stack(
+      body: Stack(
           children: [
             // Page content
             PageView(
@@ -59,7 +56,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ],
         ),
-      ),
     );
   }
 }

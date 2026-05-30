@@ -10,8 +10,6 @@ import 'package:promptore/core/models/models.dart';
 import 'package:promptore/core/providers/prompts_provider.dart';
 import 'package:promptore/core/providers/collections_provider.dart';
 import 'package:promptore/core/providers/users_provider.dart';
-import 'package:promptore/core/widgets/grain_overlay.dart';
-
 /// Explore screen — discover categories, trending prompts, rising creators.
 class ExploreScreen extends ConsumerWidget {
   const ExploreScreen({super.key});
@@ -27,8 +25,7 @@ class ExploreScreen extends ConsumerWidget {
       ..sort((a, b) => b.echoCount.compareTo(a.echoCount));
     final topPrompts = trending.take(5).toList();
 
-    return GrainOverlay(
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: PromptoreColorExtension.of(context).background,
         body: SafeArea(
           child: SingleChildScrollView(
@@ -426,8 +423,7 @@ class ExploreScreen extends ConsumerWidget {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
