@@ -8,7 +8,7 @@ class AtmosphericDivider extends StatelessWidget {
   final double indent;
   final double endIndent;
 
-  AtmosphericDivider({
+  const AtmosphericDivider({
     super.key,
     this.height = 0.5,
     this.indent = 0,

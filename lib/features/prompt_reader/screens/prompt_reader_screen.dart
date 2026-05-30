@@ -2,13 +2,16 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/colors.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
-import 'package:promptore/core/data/mock_data.dart';
 import 'package:promptore/core/models/models.dart';
+import 'package:promptore/core/providers/prompts_provider.dart';
+import 'package:promptore/core/providers/annotations_provider.dart';
+import 'package:promptore/core/providers/users_provider.dart';
 import 'package:promptore/core/widgets/grain_overlay.dart';
 import 'package:promptore/core/widgets/glow_container.dart';
 import 'package:promptore/core/widgets/atmospheric_divider.dart';
@@ -16,31 +19,24 @@ import '../widgets/typewriter_text.dart';
 
 /// The immersive prompt reading experience — the most atmospheric screen.
 /// Feels like reading literature, not viewing a post.
-class PromptReaderScreen extends StatefulWidget {
+class PromptReaderScreen extends ConsumerStatefulWidget {
   final String promptId;
 
-  PromptReaderScreen({super.key, required this.promptId});
+  const PromptReaderScreen({super.key, required this.promptId});
 
   @override
-  State<PromptReaderScreen> createState() => _PromptReaderScreenState();
+  ConsumerState<PromptReaderScreen> createState() => _PromptReaderScreenState();
 }
 
-class _PromptReaderScreenState extends State<PromptReaderScreen> {
-  late Prompt _prompt;
+class _PromptReaderScreenState extends ConsumerState<PromptReaderScreen> {
   bool _typewriterEnabled = true;
-  bool _isEchoed = false;
-  bool _isArchived = false;
+  final _annotationController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _prompt = MockData.prompts.firstWhere((p) => p.id == widget.promptId);
-    _isEchoed = _prompt.isEchoed;
-    _isArchived = _prompt.isArchived;
+  void dispose() {
+    _annotationController.dispose();
+    super.dispose();
   }
-
-  List<Annotation> get _annotations =>
-      MockData.annotations.where((a) => a.promptId == widget.promptId).toList();
 
   String _formatDate(DateTime dt) {
     final months = [
@@ -50,8 +46,8 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
     return '${months[dt.month - 1]} ${dt.day}, ${dt.year}';
   }
 
-  void _copyPrompt() {
-    Clipboard.setData(ClipboardData(text: _prompt.content));
+  void _copyPrompt(Prompt prompt) {
+    Clipboard.setData(ClipboardData(text: prompt.content));
     HapticFeedback.mediumImpact();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -70,6 +66,32 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
     );
   }
 
+  void _submitAnnotation() {
+    final text = _annotationController.text.trim();
+    if (text.isNotEmpty) {
+      ref.read(annotationsProvider.notifier).addAnnotation(widget.promptId, text);
+      ref.read(promptsProvider.notifier).incrementAnnotationCount(widget.promptId);
+      _annotationController.clear();
+      HapticFeedback.mediumImpact();
+      FocusScope.of(context).unfocus();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Annotation published to margin',
+            style: PromptoreTypography.bodySmall.copyWith(
+              color: PromptoreColors.parchment,
+            ),
+          ),
+          backgroundColor: PromptoreColors.surfaceElevated,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radiusMd),
+          ),
+        ),
+      );
+    }
+  }
+
   /// Parse simple markdown-like formatting: **bold** and *italic*
   List<TextSpan> _parseContent(String text) {
     final spans = <TextSpan>[];
@@ -85,7 +107,7 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
         // **bold**
         spans.add(TextSpan(
           text: match.group(1),
-          style: TextStyle(fontWeight: FontWeight.w600),
+          style: const TextStyle(fontWeight: FontWeight.w600),
         ));
       } else if (match.group(2) != null) {
         // *italic*
@@ -109,13 +131,31 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final prompts = ref.watch(promptsProvider);
+    final prompt = prompts.firstWhere((p) => p.id == widget.promptId);
+
+    final annotationsList = ref.watch(annotationsProvider);
+    final annotations = annotationsList.where((a) => a.promptId == widget.promptId).toList();
+
+    final users = ref.watch(usersProvider);
+    final author = users.firstWhere(
+      (u) => u.id == prompt.authorId,
+      orElse: () => UserProfile(
+        id: prompt.authorId,
+        displayName: prompt.authorName,
+        handle: prompt.authorHandle,
+        joinedAt: DateTime.now(),
+      ),
+    );
+    final isTunedIn = author.isTunedIn;
+
     return GrainOverlay(
       child: Scaffold(
         backgroundColor: PromptoreColors.background,
         body: Stack(
           children: [
             CustomScrollView(
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               slivers: [
                 // App bar
                 SliverAppBar(
@@ -149,76 +189,76 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
                     ),
                     IconButton(
                       icon: Icon(
-                        _isArchived
+                        prompt.isArchived
                             ? Icons.bookmark_rounded
                             : Icons.bookmark_outline_rounded,
                         size: 20,
-                        color: _isArchived
+                        color: prompt.isArchived
                             ? PromptoreColors.mutedGold
                             : PromptoreColors.dustySepia,
                       ),
                       onPressed: () {
                         HapticFeedback.lightImpact();
-                        setState(() => _isArchived = !_isArchived);
+                        ref.read(promptsProvider.notifier).toggleArchive(prompt.id);
                       },
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                   ],
                 ),
 
                 // Content
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 24,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
 
                         // Category
                         Row(
                           children: [
                             Text(
-                              _prompt.category.symbol,
+                              prompt.category.symbol,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: _prompt.category.color,
+                                color: prompt.category.color,
                               ),
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Text(
-                              _prompt.category.label,
+                              prompt.category.label,
                               style: PromptoreTypography.metaMedium.copyWith(
-                                color: _prompt.category.color,
+                                color: prompt.category.color,
                                 letterSpacing: 0.8,
                               ),
                             ),
                           ],
                         ).animate().fadeIn(duration: 500.ms),
 
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
 
                         // Title with optional typewriter
                         GlowContainer(
                           glowOpacity: 0.04,
-                          glowAlignment: Alignment(-0.5, 0),
+                          glowAlignment: const Alignment(-0.5, 0),
                           child: _typewriterEnabled
                               ? TypewriterText(
-                                  key: ValueKey('tw_${_prompt.id}'),
-                                  text: _prompt.title,
+                                  key: ValueKey('tw_${prompt.id}'),
+                                  text: prompt.title,
                                   style: PromptoreTypography.readerTitle,
                                   animate: true,
-                                  charDuration: Duration(milliseconds: 50),
+                                  charDuration: const Duration(milliseconds: 50),
                                 )
                               : Text(
-                                  _prompt.title,
+                                  prompt.title,
                                   style: PromptoreTypography.readerTitle,
                                 ),
                         ).animate().fadeIn(duration: 600.ms, delay: 100.ms),
 
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
                         // Author section
                         Row(
@@ -228,81 +268,91 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
                               height: Dimensions.avatarMd,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: _prompt.category.color
+                                color: prompt.category.color
                                     .withValues(alpha: 0.15),
                                 border: Border.all(
-                                  color: _prompt.category.color
+                                  color: prompt.category.color
                                       .withValues(alpha: 0.3),
                                   width: 0.5,
                                 ),
                               ),
                               child: Center(
                                 child: Text(
-                                  _prompt.authorName[0],
+                                  prompt.authorName[0],
                                   style: PromptoreTypography.labelLarge.copyWith(
-                                    color: _prompt.category.color,
+                                    color: prompt.category.color,
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(width: 12),
+                            const SizedBox(width: 12),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  _prompt.authorName,
+                                  prompt.authorName,
                                   style: PromptoreTypography.labelLarge,
                                 ),
                                 Text(
-                                  _prompt.authorHandle,
+                                  prompt.authorHandle,
                                   style: PromptoreTypography.metaMedium,
                                 ),
                               ],
                             ),
-                            Spacer(),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: PromptoreColors.mutedGold
-                                      .withValues(alpha: 0.4),
-                                  width: 0.5,
+                            const Spacer(),
+                            GestureDetector(
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                ref.read(usersProvider.notifier).toggleTuneIn(author.id);
+                              },
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 250),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 6,
                                 ),
-                                borderRadius: BorderRadius.circular(
-                                  Dimensions.radiusFull,
+                                decoration: BoxDecoration(
+                                  color: isTunedIn
+                                      ? PromptoreColors.mutedGold.withValues(alpha: 0.15)
+                                      : Colors.transparent,
+                                  border: Border.all(
+                                    color: PromptoreColors.mutedGold
+                                        .withValues(alpha: isTunedIn ? 0.6 : 0.4),
+                                    width: 0.5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                    Dimensions.radiusFull,
+                                  ),
                                 ),
-                              ),
-                              child: Text(
-                                'Tune In',
-                                style: PromptoreTypography.metaMedium.copyWith(
-                                  color: PromptoreColors.mutedGold,
-                                  letterSpacing: 0.5,
+                                child: Text(
+                                  isTunedIn ? 'Tuned In' : 'Tune In',
+                                  style: PromptoreTypography.metaMedium.copyWith(
+                                    color: PromptoreColors.mutedGold,
+                                    letterSpacing: 0.5,
+                                  ),
                                 ),
                               ),
                             ),
                           ],
                         ).animate().fadeIn(duration: 500.ms, delay: 200.ms),
 
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
 
                         // Metadata row
                         Row(
                           children: [
                             Text(
-                              _formatDate(_prompt.createdAt),
+                              _formatDate(prompt.createdAt),
                               style: PromptoreTypography.readerMeta,
                             ),
-                            SizedBox(width: 16),
+                            const SizedBox(width: 16),
                             Text(
-                              _prompt.size.label,
+                              prompt.size.label,
                               style: PromptoreTypography.readerMeta,
                             ),
-                            SizedBox(width: 16),
+                            const SizedBox(width: 16),
                             Text(
-                              '${(_prompt.impactScore * 100).toInt()}% impact',
+                              '${(prompt.impactScore * 100).toInt()}% impact',
                               style: PromptoreTypography.readerMeta.copyWith(
                                 color: PromptoreColors.mutedGold,
                               ),
@@ -310,16 +360,16 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
                           ],
                         ).animate().fadeIn(duration: 400.ms, delay: 300.ms),
 
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
-                        AtmosphericDivider(),
+                        const AtmosphericDivider(),
 
-                        SizedBox(height: 28),
+                        const SizedBox(height: 28),
 
                         // Remix attribution
-                        if (_prompt.remixOfTitle != null) ...[
+                        if (prompt.remixOfTitle != null) ...[
                           Container(
-                            padding: EdgeInsets.all(14),
+                            padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
                               color: PromptoreColors.surfaceElevated,
                               borderRadius: BorderRadius.circular(
@@ -338,10 +388,10 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
                                   size: 14,
                                   color: PromptoreColors.fadedBronze,
                                 ),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
-                                    'Remixed from: ${_prompt.remixOfTitle}',
+                                    'Remixed from: ${prompt.remixOfTitle}',
                                     style: PromptoreTypography.metaMedium.copyWith(
                                       color: PromptoreColors.fadedBronze,
                                     ),
@@ -350,26 +400,26 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
                         ],
 
                         // Prompt content — paragraph by paragraph
-                        ..._buildContentParagraphs(),
+                        ..._buildContentParagraphs(prompt),
 
-                        SizedBox(height: 32),
+                        const SizedBox(height: 32),
 
-                        AtmosphericDivider(),
+                        const AtmosphericDivider(),
 
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
                         // Tags
-                        if (_prompt.tags.isNotEmpty) ...[
+                        if (prompt.tags.isNotEmpty) ...[
                           Wrap(
                             spacing: 8,
                             runSpacing: 6,
-                            children: _prompt.tags.map((tag) {
+                            children: prompt.tags.map((tag) {
                               return Container(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                   horizontal: 10,
                                   vertical: 5,
                                 ),
@@ -389,24 +439,25 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
                               );
                             }).toList(),
                           ).animate().fadeIn(duration: 400.ms),
-                          SizedBox(height: 32),
+                          const SizedBox(height: 32),
                         ],
 
                         // Annotations section
-                        if (_annotations.isNotEmpty) ...[
-                          Text(
-                            'Annotations',
-                            style: PromptoreTypography.titleSmall.copyWith(
-                              color: PromptoreColors.dustySepia,
-                              letterSpacing: 1.0,
-                            ),
+                        Text(
+                          'Annotations',
+                          style: PromptoreTypography.titleSmall.copyWith(
+                            color: PromptoreColors.dustySepia,
+                            letterSpacing: 1.0,
                           ),
-                          SizedBox(height: 16),
-                          ..._annotations.asMap().entries.map((entry) {
+                        ),
+                        const SizedBox(height: 16),
+                        
+                        if (annotations.isNotEmpty) ...[
+                          ...annotations.asMap().entries.map((entry) {
                             final ann = entry.value;
                             return Container(
-                              margin: EdgeInsets.only(bottom: 12),
-                              padding: EdgeInsets.all(16),
+                              margin: const EdgeInsets.only(bottom: 12),
+                              padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
                                 color: PromptoreColors.surfaceElevated,
                                 borderRadius: BorderRadius.circular(
@@ -432,14 +483,14 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
                                           color: PromptoreColors.parchment,
                                         ),
                                       ),
-                                      SizedBox(width: 6),
+                                      const SizedBox(width: 6),
                                       Text(
                                         ann.authorHandle,
                                         style: PromptoreTypography.metaSmall,
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 8),
+                                  const SizedBox(height: 8),
                                   Text(
                                     ann.content,
                                     style: PromptoreTypography.bodySmall.copyWith(
@@ -456,10 +507,76 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
                                   ),
                                 );
                           }),
+                        ] else ...[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              'No margin notes on this manuscript yet.',
+                              style: PromptoreTypography.bodySmall.copyWith(
+                                color: PromptoreColors.charcoal,
+                              ),
+                            ),
+                          ),
                         ],
 
+                        // Add Margin Note input
+                        const SizedBox(height: 24),
+                        Text(
+                          'Add Margin Note',
+                          style: PromptoreTypography.titleSmall.copyWith(
+                            color: PromptoreColors.dustySepia,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        TextField(
+                          controller: _annotationController,
+                          style: PromptoreTypography.bodySmall.copyWith(
+                            color: PromptoreColors.parchment,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Write a thought or annotation...',
+                            hintStyle: PromptoreTypography.bodySmall.copyWith(
+                              color: PromptoreColors.charcoal,
+                            ),
+                            filled: true,
+                            fillColor: PromptoreColors.surfaceElevated,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(Dimensions.radiusSm),
+                              borderSide: BorderSide(
+                                color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+                                width: 0.5,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(Dimensions.radiusSm),
+                              borderSide: BorderSide(
+                                color: PromptoreColors.warmGray.withValues(alpha: 0.3),
+                                width: 0.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(Dimensions.radiusSm),
+                              borderSide: BorderSide(
+                                color: PromptoreColors.mutedGold.withValues(alpha: 0.5),
+                                width: 0.5,
+                              ),
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                Icons.add_comment_rounded,
+                                color: PromptoreColors.mutedGold,
+                                size: 18,
+                              ),
+                              onPressed: _submitAnnotation,
+                            ),
+                          ),
+                          maxLines: 2,
+                          onSubmitted: (_) => _submitAnnotation(),
+                        ),
+
                         // Bottom padding for action bar
-                        SizedBox(height: 100),
+                        const SizedBox(height: 100),
                       ],
                     ),
                   ),
@@ -477,7 +594,7 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                   child: Container(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 20,
                       vertical: 12,
                     ),
@@ -497,40 +614,50 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
                         _FloatingAction(
                           icon: Icons.copy_rounded,
                           label: 'Copy',
-                          onTap: _copyPrompt,
+                          onTap: () => _copyPrompt(prompt),
                         ),
                         _FloatingAction(
-                          icon: _isEchoed
-                              ? Icons.graphic_eq_rounded
-                              : Icons.graphic_eq_rounded,
+                          icon: Icons.graphic_eq_rounded,
                           label: 'Echo',
-                          isActive: _isEchoed,
+                          isActive: prompt.isEchoed,
                           onTap: () {
                             HapticFeedback.lightImpact();
-                            setState(() => _isEchoed = !_isEchoed);
+                            ref.read(promptsProvider.notifier).toggleEcho(prompt.id);
                           },
                         ),
                         _FloatingAction(
-                          icon: _isArchived
+                          icon: prompt.isArchived
                               ? Icons.bookmark_rounded
                               : Icons.bookmark_outline_rounded,
                           label: 'Archive',
-                          isActive: _isArchived,
+                          isActive: prompt.isArchived,
                           onTap: () {
                             HapticFeedback.lightImpact();
-                            setState(() => _isArchived = !_isArchived);
+                            ref.read(promptsProvider.notifier).toggleArchive(prompt.id);
                           },
                         ),
                         _FloatingAction(
                           icon: Icons.call_split_rounded,
                           label: 'Remix',
-                          onTap: () => context.push('/remix/${_prompt.id}'),
+                          onTap: () => context.push('/remix/${prompt.id}'),
                         ),
                         _FloatingAction(
                           icon: Icons.send_rounded,
                           label: 'Transmit',
                           onTap: () {
                             HapticFeedback.selectionClick();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Prompt transmitted successfully',
+                                  style: PromptoreTypography.bodySmall.copyWith(
+                                    color: PromptoreColors.parchment,
+                                  ),
+                                ),
+                                backgroundColor: PromptoreColors.surfaceElevated,
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
                           },
                         ),
                       ],
@@ -552,14 +679,14 @@ class _PromptReaderScreenState extends State<PromptReaderScreen> {
   }
 
   /// Build content paragraphs with simple markdown parsing
-  List<Widget> _buildContentParagraphs() {
-    final paragraphs = _prompt.content.split('\n\n');
+  List<Widget> _buildContentParagraphs(Prompt prompt) {
+    final paragraphs = prompt.content.split('\n\n');
     return paragraphs.asMap().entries.map((entry) {
       final text = entry.value.trim();
-      if (text.isEmpty) return SizedBox.shrink();
+      if (text.isEmpty) return const SizedBox.shrink();
 
       return Padding(
-        padding: EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.only(bottom: 16),
         child: RichText(
           text: TextSpan(
             style: PromptoreTypography.readerBody,
@@ -581,7 +708,7 @@ class _FloatingAction extends StatelessWidget {
   final bool isActive;
   final VoidCallback onTap;
 
-  _FloatingAction({
+  const _FloatingAction({
     required this.icon,
     required this.label,
     this.isActive = false,
@@ -603,7 +730,7 @@ class _FloatingAction extends StatelessWidget {
                 ? PromptoreColors.mutedGold
                 : PromptoreColors.dustySepia,
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             label,
             style: PromptoreTypography.metaSmall.copyWith(

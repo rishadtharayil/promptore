@@ -11,7 +11,7 @@ import '../core/theme/dimensions.dart';
 class MainShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
-  MainShell({super.key, required this.navigationShell});
+  const MainShell({super.key, required this.navigationShell});
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +97,7 @@ class _NavItem extends StatelessWidget {
   final bool isActive;
   final VoidCallback onTap;
 
-  _NavItem({
+  const _NavItem({
     required this.icon,
     required this.activeIcon,
     required this.label,
@@ -149,7 +149,7 @@ class _ComposeButton extends StatelessWidget {
   final bool isActive;
   final VoidCallback onTap;
 
-  _ComposeButton({
+  const _ComposeButton({
     required this.isActive,
     required this.onTap,
   });

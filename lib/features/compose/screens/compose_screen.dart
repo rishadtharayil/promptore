@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:promptore/core/theme/colors.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/models/models.dart';
+import 'package:promptore/core/data/mock_data.dart';
+import 'package:promptore/core/providers/prompts_provider.dart';
 import 'package:promptore/core/widgets/grain_overlay.dart';
 import 'package:promptore/core/widgets/atmospheric_divider.dart';
 
 /// Compose screen — write something that outlasts you.
-class ComposeScreen extends StatefulWidget {
-  ComposeScreen({super.key});
+class ComposeScreen extends ConsumerStatefulWidget {
+  const ComposeScreen({super.key});
 
   @override
-  State<ComposeScreen> createState() => _ComposeScreenState();
+  ConsumerState<ComposeScreen> createState() => _ComposeScreenState();
 }
 
-class _ComposeScreenState extends State<ComposeScreen> {
+class _ComposeScreenState extends ConsumerState<ComposeScreen> {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
   PromptCategory _selectedCategory = PromptCategory.character;
@@ -42,7 +46,59 @@ class _ComposeScreenState extends State<ComposeScreen> {
   }
 
   void _publish() {
+    final title = _titleController.text.trim();
+    final content = _contentController.text.trim();
+
+    if (title.isEmpty || content.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Title and content cannot be empty',
+            style: PromptoreTypography.bodySmall.copyWith(
+              color: PromptoreColors.parchment,
+            ),
+          ),
+          backgroundColor: PromptoreColors.surfaceElevated,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
     HapticFeedback.mediumImpact();
+
+    // Create custom prompt excerpt
+    final excerpt = content.length > 120 ? '${content.substring(0, 120)}...' : content;
+    final wordCount = content.split(RegExp(r'\s+')).length;
+    PromptSize size = PromptSize.medium;
+    if (wordCount < 200) {
+      size = PromptSize.short;
+    } else if (wordCount < 500) {
+      size = PromptSize.medium;
+    } else if (wordCount < 1000) {
+      size = PromptSize.long;
+    } else {
+      size = PromptSize.epic;
+    }
+
+    final newPrompt = Prompt(
+      id: 'p-${const Uuid().v4()}',
+      title: title,
+      excerpt: excerpt,
+      content: content,
+      authorId: MockData.currentUser.id,
+      authorName: MockData.currentUser.displayName,
+      authorHandle: MockData.currentUser.handle,
+      authorAvatarUrl: MockData.currentUser.avatarUrl,
+      category: _selectedCategory,
+      tags: List.from(_tags),
+      createdAt: DateTime.now(),
+      size: size,
+      impactScore: 0.5,
+    );
+
+    ref.read(promptsProvider.notifier).addPrompt(newPrompt);
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -58,6 +114,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
         ),
       ),
     );
+
     _titleController.clear();
     _contentController.clear();
     setState(() {
@@ -73,16 +130,16 @@ class _ComposeScreenState extends State<ComposeScreen> {
         backgroundColor: PromptoreColors.background,
         body: SafeArea(
           child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            padding: EdgeInsets.only(bottom: 100),
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.only(bottom: 100),
             child: Padding(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: Dimensions.pagePaddingH,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
                   // Header
                   Text(
@@ -90,14 +147,14 @@ class _ComposeScreenState extends State<ComposeScreen> {
                     style: PromptoreTypography.displaySmall,
                   ).animate().fadeIn(duration: 500.ms),
 
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
 
                   Text(
                     'Write something that outlasts you',
                     style: PromptoreTypography.accent.copyWith(fontSize: 14),
                   ).animate().fadeIn(duration: 400.ms, delay: 100.ms),
 
-                  SizedBox(height: 28),
+                  const SizedBox(height: 28),
 
                   // Title field
                   TextField(
@@ -124,11 +181,11 @@ class _ComposeScreenState extends State<ComposeScreen> {
                     maxLines: 2,
                   ).animate().fadeIn(duration: 400.ms, delay: 200.ms),
 
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
-                  AtmosphericDivider(),
+                  const AtmosphericDivider(),
 
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Content field
                   TextField(
@@ -152,11 +209,11 @@ class _ComposeScreenState extends State<ComposeScreen> {
                     minLines: 8,
                   ).animate().fadeIn(duration: 400.ms, delay: 300.ms),
 
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-                  AtmosphericDivider(),
+                  const AtmosphericDivider(),
 
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
                   // Category selector
                   Text(
@@ -167,7 +224,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
                     ),
                   ).animate().fadeIn(duration: 400.ms, delay: 350.ms),
 
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
                   SizedBox(
                     height: 36,
@@ -178,8 +235,8 @@ class _ComposeScreenState extends State<ComposeScreen> {
                         return GestureDetector(
                           onTap: () => setState(() => _selectedCategory = cat),
                           child: Container(
-                            margin: EdgeInsets.only(right: 8),
-                            padding: EdgeInsets.symmetric(
+                            margin: const EdgeInsets.only(right: 8),
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 6,
                             ),
@@ -207,7 +264,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
                                     color: cat.color,
                                   ),
                                 ),
-                                SizedBox(width: 5),
+                                const SizedBox(width: 5),
                                 Text(
                                   cat.label.split(' ').first,
                                   style: PromptoreTypography.metaSmall.copyWith(
@@ -225,7 +282,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
                     ),
                   ).animate().fadeIn(duration: 400.ms, delay: 400.ms),
 
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
                   // Tags
                   Text(
@@ -236,7 +293,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
                     ),
                   ),
 
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
                   if (_tags.isNotEmpty) ...[
                     Wrap(
@@ -244,7 +301,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
                       runSpacing: 6,
                       children: _tags.map((tag) {
                         return Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             horizontal: 10,
                             vertical: 5,
                           ),
@@ -263,7 +320,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
                                   color: PromptoreColors.dustySepia,
                                 ),
                               ),
-                              SizedBox(width: 4),
+                              const SizedBox(width: 4),
                               GestureDetector(
                                 onTap: () {
                                   setState(() => _tags.remove(tag));
@@ -279,7 +336,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
                         );
                       }).toList(),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                   ],
 
                   TextField(
@@ -303,7 +360,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
                     },
                   ),
 
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
 
                   // Publish button
                   SizedBox(
@@ -311,7 +368,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
                     child: GestureDetector(
                       onTap: _publish,
                       child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         decoration: BoxDecoration(
                           color: PromptoreColors.mutedGold,
                           borderRadius:

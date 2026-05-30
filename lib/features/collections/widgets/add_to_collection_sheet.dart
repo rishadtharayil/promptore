@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:promptore/core/theme/colors.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
-import 'package:promptore/core/data/mock_data.dart';
+import 'package:promptore/core/providers/collections_provider.dart';
 
 /// Bottom sheet for saving a prompt to a collection.
-class AddToCollectionSheet extends StatelessWidget {
+class AddToCollectionSheet extends ConsumerWidget {
   final String promptId;
 
-  AddToCollectionSheet({super.key, required this.promptId});
+  const AddToCollectionSheet({super.key, required this.promptId});
 
   static void show(BuildContext context, String promptId) {
     showModalBottomSheet(
@@ -25,12 +26,103 @@ class AddToCollectionSheet extends StatelessWidget {
     );
   }
 
+  void _showCreateCollectionDialog(BuildContext context, WidgetRef ref) {
+    final nameController = TextEditingController();
+    final descController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: PromptoreColors.surfaceElevated,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Dimensions.radiusMd),
+        ),
+        title: Text(
+          'Create Collection',
+          style: PromptoreTypography.titleMedium,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              autofocus: true,
+              style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.parchment),
+              decoration: InputDecoration(
+                hintText: 'Collection Name',
+                hintStyle: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.charcoal),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: PromptoreColors.warmGray.withValues(alpha: 0.3)),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: PromptoreColors.mutedGold),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: descController,
+              style: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.parchment),
+              decoration: InputDecoration(
+                hintText: 'Description (Optional)',
+                hintStyle: PromptoreTypography.bodySmall.copyWith(color: PromptoreColors.charcoal),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: PromptoreColors.warmGray.withValues(alpha: 0.3)),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: PromptoreColors.mutedGold),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              'Cancel',
+              style: PromptoreTypography.metaMedium.copyWith(color: PromptoreColors.dustySepia),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              final name = nameController.text.trim();
+              if (name.isNotEmpty) {
+                ref.read(collectionsProvider.notifier).createCollection(
+                  name,
+                  descController.text.trim().isEmpty ? null : descController.text.trim(),
+                );
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Collection "$name" created',
+                      style: PromptoreTypography.bodySmall.copyWith(
+                        color: PromptoreColors.parchment,
+                      ),
+                    ),
+                    backgroundColor: PromptoreColors.surfaceElevated,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            },
+            child: Text(
+              'Create',
+              style: PromptoreTypography.metaMedium.copyWith(color: PromptoreColors.mutedGold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
-    final collections = MockData.collections;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final collections = ref.watch(collectionsProvider);
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -43,11 +135,11 @@ class AddToCollectionSheet extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
           // Title
           Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: Dimensions.pagePaddingH,
             ),
             child: Row(
@@ -69,13 +161,13 @@ class AddToCollectionSheet extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
 
           // Collection list
           ...collections.map((col) {
             final isInCollection = col.promptIds.contains(promptId);
             return ListTile(
-              contentPadding: EdgeInsets.symmetric(
+              contentPadding: const EdgeInsets.symmetric(
                 horizontal: Dimensions.pagePaddingH,
                 vertical: 4,
               ),
@@ -110,6 +202,7 @@ class AddToCollectionSheet extends StatelessWidget {
               ),
               onTap: () {
                 HapticFeedback.selectionClick();
+                ref.read(collectionsProvider.notifier).togglePromptInCollection(col.id, promptId);
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -131,7 +224,7 @@ class AddToCollectionSheet extends StatelessWidget {
 
           // Create new collection
           ListTile(
-            contentPadding: EdgeInsets.symmetric(
+            contentPadding: const EdgeInsets.symmetric(
               horizontal: Dimensions.pagePaddingH,
               vertical: 4,
             ),
@@ -157,6 +250,7 @@ class AddToCollectionSheet extends StatelessWidget {
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
+              _showCreateCollectionDialog(context, ref);
             },
           ),
 

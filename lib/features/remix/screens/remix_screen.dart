@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:promptore/core/theme/colors.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/data/mock_data.dart';
 import 'package:promptore/core/models/models.dart';
+import 'package:promptore/core/providers/prompts_provider.dart';
 import 'package:promptore/core/widgets/grain_overlay.dart';
 import 'package:promptore/core/widgets/atmospheric_divider.dart';
 
 /// Remix screen — fork a prompt and make it your own.
-class RemixScreen extends StatefulWidget {
+class RemixScreen extends ConsumerStatefulWidget {
   final String promptId;
 
-  RemixScreen({super.key, required this.promptId});
+  const RemixScreen({super.key, required this.promptId});
 
   @override
-  State<RemixScreen> createState() => _RemixScreenState();
+  ConsumerState<RemixScreen> createState() => _RemixScreenState();
 }
 
-class _RemixScreenState extends State<RemixScreen> {
+class _RemixScreenState extends ConsumerState<RemixScreen> {
   late Prompt _original;
   late TextEditingController _titleController;
   late TextEditingController _contentController;
@@ -33,7 +36,9 @@ class _RemixScreenState extends State<RemixScreen> {
   @override
   void initState() {
     super.initState();
-    _original = MockData.prompts.firstWhere((p) => p.id == widget.promptId);
+    // Read directly from provider to ensure we have the latest original state
+    final prompts = ref.read(promptsProvider);
+    _original = prompts.firstWhere((p) => p.id == widget.promptId);
     _titleController =
         TextEditingController(text: 'Remix of: ${_original.title}');
     _contentController = TextEditingController(text: _original.content);
@@ -49,7 +54,62 @@ class _RemixScreenState extends State<RemixScreen> {
   }
 
   void _publish() {
+    final title = _titleController.text.trim();
+    final content = _contentController.text.trim();
+
+    if (title.isEmpty || content.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Title and content cannot be empty',
+            style: PromptoreTypography.bodySmall.copyWith(
+              color: PromptoreColors.parchment,
+            ),
+          ),
+          backgroundColor: PromptoreColors.surfaceElevated,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
     HapticFeedback.mediumImpact();
+
+    final excerpt = content.length > 120 ? '${content.substring(0, 120)}...' : content;
+    final wordCount = content.split(RegExp(r'\s+')).length;
+    PromptSize size = PromptSize.medium;
+    if (wordCount < 200) {
+      size = PromptSize.short;
+    } else if (wordCount < 500) {
+      size = PromptSize.medium;
+    } else if (wordCount < 1000) {
+      size = PromptSize.long;
+    } else {
+      size = PromptSize.epic;
+    }
+
+    final remixedPrompt = Prompt(
+      id: 'p-${const Uuid().v4()}',
+      title: title,
+      excerpt: excerpt,
+      content: content,
+      authorId: MockData.currentUser.id,
+      authorName: MockData.currentUser.displayName,
+      authorHandle: MockData.currentUser.handle,
+      authorAvatarUrl: MockData.currentUser.avatarUrl,
+      category: _selectedCategory,
+      tags: List.from(_tags),
+      createdAt: DateTime.now(),
+      size: size,
+      impactScore: 0.5,
+      remixOfId: _original.id,
+      remixOfTitle: _original.title,
+    );
+
+    // Save remix and update original remix count
+    ref.read(promptsProvider.notifier).addPrompt(remixedPrompt);
+    ref.read(promptsProvider.notifier).incrementRemixCount(_original.id);
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -92,16 +152,16 @@ class _RemixScreenState extends State<RemixScreen> {
           centerTitle: true,
         ),
         body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.only(bottom: 100),
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: 100),
           child: Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: Dimensions.pagePaddingH,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
 
                 // Attribution
                 Row(
@@ -111,7 +171,7 @@ class _RemixScreenState extends State<RemixScreen> {
                       size: 14,
                       color: PromptoreColors.fadedBronze,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Text(
                       'Original by ${_original.authorName}',
                       style: PromptoreTypography.metaLarge.copyWith(
@@ -121,7 +181,7 @@ class _RemixScreenState extends State<RemixScreen> {
                   ],
                 ).animate().fadeIn(duration: 400.ms),
 
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 // Original prompt (collapsible)
                 GestureDetector(
@@ -129,8 +189,8 @@ class _RemixScreenState extends State<RemixScreen> {
                     setState(() => _originalExpanded = !_originalExpanded);
                   },
                   child: AnimatedContainer(
-                    duration: Duration(milliseconds: 300),
-                    padding: EdgeInsets.all(16),
+                    duration: const Duration(milliseconds: 300),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: PromptoreColors.surface,
                       borderRadius:
@@ -164,7 +224,7 @@ class _RemixScreenState extends State<RemixScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Text(
                           _originalExpanded
                               ? _original.content
@@ -180,7 +240,7 @@ class _RemixScreenState extends State<RemixScreen> {
                   ),
                 ).animate().fadeIn(duration: 400.ms, delay: 100.ms),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 // "Your Remix" label
                 Row(
@@ -190,7 +250,7 @@ class _RemixScreenState extends State<RemixScreen> {
                       height: 1,
                       color: PromptoreColors.mutedGold.withValues(alpha: 0.3),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Text(
                       'YOUR REMIX',
                       style: PromptoreTypography.metaLarge.copyWith(
@@ -198,7 +258,7 @@ class _RemixScreenState extends State<RemixScreen> {
                         color: PromptoreColors.mutedGold,
                       ),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: Container(
                         height: 1,
@@ -209,7 +269,7 @@ class _RemixScreenState extends State<RemixScreen> {
                   ],
                 ).animate().fadeIn(duration: 400.ms, delay: 200.ms),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 // Title field
                 TextField(
@@ -235,11 +295,11 @@ class _RemixScreenState extends State<RemixScreen> {
                   maxLines: 2,
                 ).animate().fadeIn(duration: 400.ms, delay: 300.ms),
 
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
 
-                AtmosphericDivider(),
+                const AtmosphericDivider(),
 
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
 
                 // Content field
                 TextField(
@@ -261,7 +321,7 @@ class _RemixScreenState extends State<RemixScreen> {
                   minLines: 6,
                 ).animate().fadeIn(duration: 400.ms, delay: 350.ms),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 // Category
                 SizedBox(
@@ -274,8 +334,8 @@ class _RemixScreenState extends State<RemixScreen> {
                         onTap: () =>
                             setState(() => _selectedCategory = cat),
                         child: Container(
-                          margin: EdgeInsets.only(right: 8),
-                          padding: EdgeInsets.symmetric(
+                          margin: const EdgeInsets.only(right: 8),
+                          padding: const EdgeInsets.symmetric(
                             horizontal: 12,
                             vertical: 6,
                           ),
@@ -304,7 +364,7 @@ class _RemixScreenState extends State<RemixScreen> {
                                   color: cat.color,
                                 ),
                               ),
-                              SizedBox(width: 5),
+                              const SizedBox(width: 5),
                               Text(
                                 cat.label.split(' ').first,
                                 style: PromptoreTypography.metaSmall.copyWith(
@@ -322,7 +382,7 @@ class _RemixScreenState extends State<RemixScreen> {
                   ),
                 ),
 
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 // Tags
                 Wrap(
@@ -330,7 +390,7 @@ class _RemixScreenState extends State<RemixScreen> {
                   runSpacing: 6,
                   children: _tags.map((tag) {
                     return Container(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 10,
                         vertical: 5,
                       ),
@@ -349,7 +409,7 @@ class _RemixScreenState extends State<RemixScreen> {
                               color: PromptoreColors.dustySepia,
                             ),
                           ),
-                          SizedBox(width: 4),
+                          const SizedBox(width: 4),
                           GestureDetector(
                             onTap: () {
                               setState(() => _tags.remove(tag));
@@ -366,7 +426,7 @@ class _RemixScreenState extends State<RemixScreen> {
                   }).toList(),
                 ),
 
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
 
                 // Publish button
                 SizedBox(
@@ -374,7 +434,7 @@ class _RemixScreenState extends State<RemixScreen> {
                   child: GestureDetector(
                     onTap: _publish,
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
                         color: PromptoreColors.mutedGold,
                         borderRadius:

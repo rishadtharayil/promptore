@@ -10,7 +10,7 @@ class GlowContainer extends StatelessWidget {
   final double glowOpacity;
   final AlignmentGeometry glowAlignment;
 
-  GlowContainer({
+  const GlowContainer({
     super.key,
     required this.child,
     this.glowColor,

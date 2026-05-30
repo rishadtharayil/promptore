@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -7,49 +8,15 @@ import 'package:promptore/core/theme/colors.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
 import 'package:promptore/core/models/models.dart';
+import 'package:promptore/core/providers/prompts_provider.dart';
 
 /// The core prompt card — designed to feel like a manuscript excerpt,
 /// an archival entry, or a collectible artifact. NOT a social media post.
-class PromptCard extends StatefulWidget {
+class PromptCard extends ConsumerWidget {
   final Prompt prompt;
   final int index;
 
   const PromptCard({super.key, required this.prompt, this.index = 0});
-
-  @override
-  State<PromptCard> createState() => _PromptCardState();
-}
-
-class _PromptCardState extends State<PromptCard> {
-  late bool _isEchoed;
-  late bool _isArchived;
-  late int _echoCount;
-  late int _archiveCount;
-
-  @override
-  void initState() {
-    super.initState();
-    _isEchoed = widget.prompt.isEchoed;
-    _isArchived = widget.prompt.isArchived;
-    _echoCount = widget.prompt.echoCount;
-    _archiveCount = widget.prompt.archiveCount;
-  }
-
-  void _toggleEcho() {
-    HapticFeedback.lightImpact();
-    setState(() {
-      _isEchoed = !_isEchoed;
-      _echoCount += _isEchoed ? 1 : -1;
-    });
-  }
-
-  void _toggleArchive() {
-    HapticFeedback.lightImpact();
-    setState(() {
-      _isArchived = !_isArchived;
-      _archiveCount += _isArchived ? 1 : -1;
-    });
-  }
 
   String _timeAgo(DateTime dateTime) {
     final diff = DateTime.now().difference(dateTime);
@@ -62,8 +29,10 @@ class _PromptCardState extends State<PromptCard> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final p = widget.prompt;
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch promptsProvider to get the latest state of this prompt
+    final prompts = ref.watch(promptsProvider);
+    final p = prompts.firstWhere((element) => element.id == prompt.id, orElse: () => prompt);
 
     return GestureDetector(
       onTap: () => context.push('/prompt/${p.id}'),
@@ -239,18 +208,24 @@ class _PromptCardState extends State<PromptCard> {
                 // Echo
                 _ActionButton(
                   icon: Icons.graphic_eq_rounded,
-                  count: _echoCount,
-                  isActive: _isEchoed,
-                  onTap: _toggleEcho,
+                  count: p.echoCount,
+                  isActive: p.isEchoed,
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    ref.read(promptsProvider.notifier).toggleEcho(p.id);
+                  },
                 ),
                 const SizedBox(width: 20),
                 // Archive
                 _ActionButton(
                   icon: Icons.bookmark_outline_rounded,
                   activeIcon: Icons.bookmark_rounded,
-                  count: _archiveCount,
-                  isActive: _isArchived,
-                  onTap: _toggleArchive,
+                  count: p.archiveCount,
+                  isActive: p.isArchived,
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    ref.read(promptsProvider.notifier).toggleArchive(p.id);
+                  },
                 ),
                 const SizedBox(width: 20),
                 // Remix
@@ -271,14 +246,14 @@ class _PromptCardState extends State<PromptCard> {
           .animate()
           .fadeIn(
             duration: 500.ms,
-            delay: Duration(milliseconds: 80 * widget.index),
+            delay: Duration(milliseconds: 80 * index),
             curve: Curves.easeOut,
           )
           .slideY(
             begin: 0.04,
             end: 0,
             duration: 500.ms,
-            delay: Duration(milliseconds: 80 * widget.index),
+            delay: Duration(milliseconds: 80 * index),
             curve: Curves.easeOut,
           ),
     );

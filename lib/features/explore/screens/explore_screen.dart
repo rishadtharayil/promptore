@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:promptore/core/theme/colors.dart';
 import 'package:promptore/core/theme/typography.dart';
 import 'package:promptore/core/theme/dimensions.dart';
-import 'package:promptore/core/data/mock_data.dart';
 import 'package:promptore/core/models/models.dart';
+import 'package:promptore/core/providers/prompts_provider.dart';
+import 'package:promptore/core/providers/collections_provider.dart';
+import 'package:promptore/core/providers/users_provider.dart';
 import 'package:promptore/core/widgets/grain_overlay.dart';
 
 /// Explore screen — discover categories, trending prompts, rising creators.
-class ExploreScreen extends StatelessWidget {
-  ExploreScreen({super.key});
+class ExploreScreen extends ConsumerWidget {
+  const ExploreScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final prompts = ref.watch(promptsProvider);
+    final collections = ref.watch(collectionsProvider);
+    final users = ref.watch(usersProvider);
+
     // Top 5 prompts by echo count
-    final trending = List<Prompt>.from(MockData.prompts)
+    final trending = List<Prompt>.from(prompts)
       ..sort((a, b) => b.echoCount.compareTo(a.echoCount));
     final topPrompts = trending.take(5).toList();
 
@@ -25,16 +32,16 @@ class ExploreScreen extends StatelessWidget {
         backgroundColor: PromptoreColors.background,
         body: SafeArea(
           child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            padding: EdgeInsets.only(bottom: 100),
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.only(bottom: 100),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 // Header
                 Padding(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: Dimensions.pagePaddingH,
                   ),
                   child: Text(
@@ -43,17 +50,17 @@ class ExploreScreen extends StatelessWidget {
                   ),
                 ).animate().fadeIn(duration: 500.ms),
 
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 // Search bar (tappable, navigates to /search)
                 Padding(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: Dimensions.pagePaddingH,
                   ),
                   child: GestureDetector(
                     onTap: () => context.push('/search'),
                     child: Container(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 14,
                       ),
@@ -72,7 +79,7 @@ class ExploreScreen extends StatelessWidget {
                             size: 18,
                             color: PromptoreColors.charcoal,
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Text(
                             'Search the archive...',
                             style: PromptoreTypography.bodyMedium.copyWith(
@@ -85,11 +92,11 @@ class ExploreScreen extends StatelessWidget {
                   ),
                 ).animate().fadeIn(duration: 400.ms, delay: 100.ms),
 
-                SizedBox(height: 28),
+                const SizedBox(height: 28),
 
                 // Trending section
                 Padding(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: Dimensions.pagePaddingH,
                   ),
                   child: Text(
@@ -101,14 +108,14 @@ class ExploreScreen extends StatelessWidget {
                   ),
                 ).animate().fadeIn(duration: 400.ms, delay: 150.ms),
 
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
 
                 // Trending cards
                 SizedBox(
                   height: 110,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: Dimensions.pagePaddingH,
                     ),
                     itemCount: topPrompts.length,
@@ -118,8 +125,8 @@ class ExploreScreen extends StatelessWidget {
                         onTap: () => context.push('/prompt/${p.id}'),
                         child: Container(
                           width: 200,
-                          margin: EdgeInsets.only(right: 12),
-                          padding: EdgeInsets.all(14),
+                          margin: const EdgeInsets.only(right: 12),
+                          padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
                             color: PromptoreColors.surface,
                             borderRadius:
@@ -143,7 +150,7 @@ class ExploreScreen extends StatelessWidget {
                                       color: p.category.color,
                                     ),
                                   ),
-                                  SizedBox(width: 6),
+                                  const SizedBox(width: 6),
                                   Text(
                                     p.category.label.split(' ').first,
                                     style: PromptoreTypography.metaSmall
@@ -151,7 +158,7 @@ class ExploreScreen extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               Expanded(
                                 child: Text(
                                   p.title,
@@ -170,7 +177,7 @@ class ExploreScreen extends StatelessWidget {
                                     size: 12,
                                     color: PromptoreColors.charcoal,
                                   ),
-                                  SizedBox(width: 4),
+                                  const SizedBox(width: 4),
                                   Text(
                                     '${p.echoCount}',
                                     style: PromptoreTypography.metaSmall,
@@ -179,28 +186,28 @@ class ExploreScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                        )
-                            .animate()
-                            .fadeIn(
-                              duration: 400.ms,
-                              delay: Duration(milliseconds: 200 + index * 80),
-                            )
-                            .slideX(
-                              begin: 0.05,
-                              end: 0,
-                              duration: 400.ms,
-                              delay: Duration(milliseconds: 200 + index * 80),
-                            ),
-                      );
+                        ),
+                      )
+                          .animate()
+                          .fadeIn(
+                            duration: 400.ms,
+                            delay: Duration(milliseconds: 200 + index * 80),
+                          )
+                          .slideX(
+                            begin: 0.05,
+                            end: 0,
+                            duration: 400.ms,
+                            delay: Duration(milliseconds: 200 + index * 80),
+                          );
                     },
                   ),
                 ),
 
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
 
                 // Categories
                 Padding(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: Dimensions.pagePaddingH,
                   ),
                   child: Text(
@@ -212,18 +219,18 @@ class ExploreScreen extends StatelessWidget {
                   ),
                 ).animate().fadeIn(duration: 400.ms, delay: 300.ms),
 
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
 
                 // Category grid
                 Padding(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: Dimensions.pagePaddingH,
                   ),
                   child: GridView.builder(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     gridDelegate:
-                        SliverGridDelegateWithFixedCrossAxisCount(
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio: 1.5,
                       crossAxisSpacing: 10,
@@ -232,7 +239,7 @@ class ExploreScreen extends StatelessWidget {
                     itemCount: PromptCategory.values.length,
                     itemBuilder: (context, index) {
                       final cat = PromptCategory.values[index];
-                      final count = MockData.prompts
+                      final count = prompts
                           .where((p) => p.category == cat)
                           .length;
                       return _CategoryTile(
@@ -244,11 +251,11 @@ class ExploreScreen extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
 
                 // Rising Creators
                 Padding(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: Dimensions.pagePaddingH,
                   ),
                   child: Text(
@@ -260,21 +267,21 @@ class ExploreScreen extends StatelessWidget {
                   ),
                 ).animate().fadeIn(duration: 400.ms, delay: 400.ms),
 
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
 
                 SizedBox(
                   height: 90,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: Dimensions.pagePaddingH,
                     ),
-                    itemCount: MockData.users.length,
+                    itemCount: users.length,
                     itemBuilder: (context, index) {
-                      final user = MockData.users[index];
+                      final user = users[index];
                       return Container(
                         width: 72,
-                        margin: EdgeInsets.only(right: 16),
+                        margin: const EdgeInsets.only(right: 16),
                         child: Column(
                           children: [
                             Container(
@@ -300,7 +307,7 @@ class ExploreScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 6),
+                            const SizedBox(height: 6),
                             Text(
                               user.displayName.split(' ').first,
                               style: PromptoreTypography.metaSmall.copyWith(
@@ -323,8 +330,8 @@ class ExploreScreen extends StatelessWidget {
                             delay: Duration(milliseconds: 450 + index * 60),
                           )
                           .scale(
-                            begin: Offset(0.9, 0.9),
-                            end: Offset(1, 1),
+                            begin: const Offset(0.9, 0.9),
+                            end: const Offset(1, 1),
                             duration: 400.ms,
                             delay: Duration(milliseconds: 450 + index * 60),
                           );
@@ -332,11 +339,11 @@ class ExploreScreen extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
 
                 // Recent Collections
                 Padding(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: Dimensions.pagePaddingH,
                   ),
                   child: Text(
@@ -348,24 +355,24 @@ class ExploreScreen extends StatelessWidget {
                   ),
                 ).animate().fadeIn(duration: 400.ms, delay: 500.ms),
 
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
 
                 SizedBox(
                   height: 100,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: Dimensions.pagePaddingH,
                     ),
-                    itemCount: MockData.collections.length,
+                    itemCount: collections.length,
                     itemBuilder: (context, index) {
-                      final col = MockData.collections[index];
+                      final col = collections[index];
                       return GestureDetector(
                         onTap: () => context.push('/collections/${col.id}'),
                         child: Container(
                           width: 180,
-                          margin: EdgeInsets.only(right: 12),
-                          padding: EdgeInsets.all(14),
+                          margin: const EdgeInsets.only(right: 12),
+                          padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
                             color: PromptoreColors.surface,
                             borderRadius:
@@ -388,7 +395,7 @@ class ExploreScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(2),
                                 ),
                               ),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               Text(
                                 col.name,
                                 maxLines: 1,
@@ -398,7 +405,7 @@ class ExploreScreen extends StatelessWidget {
                                   fontSize: 13,
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               Text(
                                 '${col.promptCount} prompts',
                                 style: PromptoreTypography.metaSmall,
@@ -438,7 +445,7 @@ class _CategoryTile extends StatelessWidget {
   final int promptCount;
   final int index;
 
-  _CategoryTile({
+  const _CategoryTile({
     required this.category,
     required this.promptCount,
     required this.index,
@@ -463,7 +470,7 @@ class _CategoryTile extends StatelessWidget {
           ],
         ),
       ),
-      padding: EdgeInsets.all(14),
+      padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -487,7 +494,7 @@ class _CategoryTile extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              SizedBox(height: 2),
+              const SizedBox(height: 2),
               Text(
                 '$promptCount prompts',
                 style: PromptoreTypography.metaSmall.copyWith(
@@ -505,8 +512,8 @@ class _CategoryTile extends StatelessWidget {
           delay: Duration(milliseconds: 350 + index * 50),
         )
         .scale(
-          begin: Offset(0.95, 0.95),
-          end: Offset(1, 1),
+          begin: const Offset(0.95, 0.95),
+          end: const Offset(1, 1),
           duration: 400.ms,
           delay: Duration(milliseconds: 350 + index * 50),
         );
