@@ -29,9 +29,8 @@ Promptore is a premium, atmospheric prompt-sharing platform designed for writers
 
 ### 📜 Premium Immersive UI/UX
 * **Glow Containers & Dividers:** Micro-interactions built with custom glowing borders, soft shadows, and deep atmospheric color schemes.
-* **Analog Grain Overlay:** A beautiful subtle grain texture that gives the application a retro-future, high-end feel.
 * **Typewriter Prompt Reader:** Read and copy prompt contents through a highly interactive, simulated terminal-like typewriter screen.
-* **Smooth Animations:** Integrated with `flutter_animate` for organic, fluid transitions between states.
+* **Smooth & Highly Performant Animations:** Integrated with `flutter_animate` for organic, fluid transitions between states, with capped staggered delays for buttery-smooth list scrolling.
 
 ---
 
@@ -72,7 +71,6 @@ lib/
     └── widgets/
         ├── atmospheric_divider.dart # Custom subtle glowing line dividers
         ├── glow_container.dart      # Glow-bordered layouts
-        ├── grain_overlay.dart       # Vintage noise / analog grain screen filter
         └── fade_in_widget.dart      # Organic entry transitions
 └── features/
     ├── onboarding/                # Cinematic entrance & setup
