@@ -120,6 +120,70 @@ class Prompt {
       isArchived: isArchived ?? this.isArchived,
     );
   }
+
+  factory Prompt.fromJson(Map<String, dynamic> json) {
+    return Prompt(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      excerpt: json['excerpt'] as String,
+      content: json['content'] as String,
+      authorId: json['author_id'] as String,
+      authorName: json['author_name'] as String,
+      authorHandle: json['author_handle'] as String,
+      authorAvatarUrl: json['author_avatar_url'] as String?,
+      category: PromptCategory.values.firstWhere(
+        (e) => e.name == json['category'],
+        orElse: () => PromptCategory.other,
+      ),
+      tags: (json['tags'] as List<dynamic>?)?.cast<String>() ?? [],
+      echoCount: json['echo_count'] as int? ?? 0,
+      archiveCount: json['archive_count'] as int? ?? 0,
+      remixCount: json['remix_count'] as int? ?? 0,
+      annotationCount: json['annotation_count'] as int? ?? 0,
+      remixOfId: json['remix_of_id'] as String?,
+      remixOfTitle: json['remix_of_title'] as String?,
+      thumbnailUrl: json['thumbnail_url'] as String?,
+      createdAt: DateTime.parse(json['created_at'] as String),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : null,
+      size: PromptSize.values.firstWhere(
+        (e) => e.name == json['size'],
+        orElse: () => PromptSize.medium,
+      ),
+      impactScore: (json['impact_score'] as num?)?.toDouble() ?? 0.0,
+      isEchoed: json['is_echoed'] as bool? ?? false,
+      isArchived: json['is_archived'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'excerpt': excerpt,
+      'content': content,
+      'author_id': authorId,
+      'author_name': authorName,
+      'author_handle': authorHandle,
+      'author_avatar_url': authorAvatarUrl,
+      'category': category.name,
+      'tags': tags,
+      'echo_count': echoCount,
+      'archive_count': archiveCount,
+      'remix_count': remixCount,
+      'annotation_count': annotationCount,
+      'remix_of_id': remixOfId,
+      'remix_of_title': remixOfTitle,
+      'thumbnail_url': thumbnailUrl,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
+      'size': size.name,
+      'impact_score': impactScore,
+      'is_echoed': isEchoed,
+      'is_archived': isArchived,
+    };
+  }
 }
 
 /// A user's collection — a curated library of prompts
@@ -145,6 +209,45 @@ class PromptCollection {
     this.coverColor,
     this.isPublic = true,
   });
+
+  static Color? _colorFromHex(String? hex) {
+    if (hex == null) return null;
+    final clean = hex.replaceFirst('#', '');
+    return Color(int.parse('FF$clean', radix: 16));
+  }
+
+  static String? _colorToHex(Color? color) {
+    if (color == null) return null;
+    return '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
+  }
+
+  factory PromptCollection.fromJson(Map<String, dynamic> json) {
+    return PromptCollection(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      ownerId: json['owner_id'] as String,
+      promptIds: (json['prompt_ids'] as List<dynamic>?)?.cast<String>() ?? [],
+      promptCount: json['prompt_count'] as int? ?? 0,
+      createdAt: DateTime.parse(json['created_at'] as String),
+      coverColor: _colorFromHex(json['cover_color'] as String?),
+      isPublic: json['is_public'] as bool? ?? true,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'owner_id': ownerId,
+      'prompt_ids': promptIds,
+      'prompt_count': promptCount,
+      'created_at': createdAt.toIso8601String(),
+      'cover_color': _colorToHex(coverColor),
+      'is_public': isPublic,
+    };
+  }
 }
 
 /// User profile — a personal archive and creative identity
@@ -180,6 +283,45 @@ class UserProfile {
     this.pinnedPromptIds = const [],
     this.isTunedIn = false,
   });
+
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    return UserProfile(
+      id: json['id'] as String,
+      displayName: json['display_name'] as String,
+      handle: json['handle'] as String,
+      bio: json['bio'] as String?,
+      avatarUrl: json['avatar_url'] as String?,
+      promptCount: json['prompt_count'] as int? ?? 0,
+      echoesReceived: json['echoes_received'] as int? ?? 0,
+      collectionsCount: json['collections_count'] as int? ?? 0,
+      tunedInCount: json['tuned_in_count'] as int? ?? 0,
+      tuningInToCount: json['tuning_in_to_count'] as int? ?? 0,
+      joinedAt: DateTime.parse(json['joined_at'] as String),
+      mood: json['mood'] as String?,
+      pinnedPromptIds:
+          (json['pinned_prompt_ids'] as List<dynamic>?)?.cast<String>() ?? [],
+      isTunedIn: json['is_tuned_in'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'display_name': displayName,
+      'handle': handle,
+      'bio': bio,
+      'avatar_url': avatarUrl,
+      'prompt_count': promptCount,
+      'echoes_received': echoesReceived,
+      'collections_count': collectionsCount,
+      'tuned_in_count': tunedInCount,
+      'tuning_in_to_count': tuningInToCount,
+      'joined_at': joinedAt.toIso8601String(),
+      'mood': mood,
+      'pinned_prompt_ids': pinnedPromptIds,
+      'is_tuned_in': isTunedIn,
+    };
+  }
 }
 
 /// Annotation on a prompt — margin notes, thoughts
@@ -201,4 +343,28 @@ class Annotation {
     required this.content,
     required this.createdAt,
   });
+
+  factory Annotation.fromJson(Map<String, dynamic> json) {
+    return Annotation(
+      id: json['id'] as String,
+      promptId: json['prompt_id'] as String,
+      authorId: json['author_id'] as String,
+      authorName: json['author_name'] as String,
+      authorHandle: json['author_handle'] as String,
+      content: json['content'] as String,
+      createdAt: DateTime.parse(json['created_at'] as String),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'prompt_id': promptId,
+      'author_id': authorId,
+      'author_name': authorName,
+      'author_handle': authorHandle,
+      'content': content,
+      'created_at': createdAt.toIso8601String(),
+    };
+  }
 }

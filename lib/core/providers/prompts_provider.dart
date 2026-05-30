@@ -1,12 +1,30 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
-import '../data/mock_data.dart';
+import '../repositories/prompts_repository.dart';
 
 class PromptsNotifier extends Notifier<List<Prompt>> {
+  final _repo = PromptsRepository();
+
   @override
   List<Prompt> build() {
-    // Start with a copy of mock data prompts
-    return List.from(MockData.prompts);
+    _init();
+    return const [];
+  }
+
+  Future<void> _init() async {
+    try {
+      final prompts = await _repo.getFeed();
+      state = prompts;
+    } catch (e) {
+      // Keep empty state on error
+    }
+  }
+
+  Future<void> refreshFeed() async {
+    try {
+      final prompts = await _repo.getFeed();
+      state = prompts;
+    } catch (_) {}
   }
 
   void toggleEcho(String id) {
@@ -20,6 +38,26 @@ class PromptsNotifier extends Notifier<List<Prompt>> {
         else
           p
     ];
+    final isNowEchoed = state.firstWhere((p) => p.id == id).isEchoed;
+    _syncEcho(id, isNowEchoed);
+  }
+
+  Future<void> _syncEcho(String id, bool echoed) async {
+    try {
+      await _repo.toggleEcho(id, echoed);
+    } catch (_) {
+      // Revert optimistic update on failure
+      state = [
+        for (final p in state)
+          if (p.id == id)
+            p.copyWith(
+              isEchoed: !p.isEchoed,
+              echoCount: p.echoCount + (p.isEchoed ? -1 : 1),
+            )
+          else
+            p
+      ];
+    }
   }
 
   void toggleArchive(String id) {
@@ -33,10 +71,39 @@ class PromptsNotifier extends Notifier<List<Prompt>> {
         else
           p
     ];
+    final isNowArchived = state.firstWhere((p) => p.id == id).isArchived;
+    _syncArchive(id, isNowArchived);
+  }
+
+  Future<void> _syncArchive(String id, bool archived) async {
+    try {
+      await _repo.toggleArchive(id, archived);
+    } catch (_) {
+      state = [
+        for (final p in state)
+          if (p.id == id)
+            p.copyWith(
+              isArchived: !p.isArchived,
+              archiveCount: p.archiveCount + (p.isArchived ? -1 : 1),
+            )
+          else
+            p
+      ];
+    }
   }
 
   void addPrompt(Prompt prompt) {
     state = [prompt, ...state];
+  }
+
+  Future<Prompt?> createPromptOnServer(Map<String, dynamic> data) async {
+    try {
+      final prompt = await _repo.createPrompt(data);
+      state = [prompt, ...state];
+      return prompt;
+    } catch (_) {
+      return null;
+    }
   }
 
   void incrementRemixCount(String originalId) {
