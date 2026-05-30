@@ -20,8 +20,10 @@ class GrainOverlay extends StatelessWidget {
         child,
         Positioned.fill(
           child: IgnorePointer(
-            child: CustomPaint(
-              painter: _GrainPainter(opacity: opacity),
+            child: RepaintBoundary(
+              child: CustomPaint(
+                painter: _GrainPainter(opacity: opacity),
+              ),
             ),
           ),
         ),
